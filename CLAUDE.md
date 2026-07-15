@@ -58,7 +58,7 @@ Reglas obligatorias para Claude en cada sesión:
 ## Plan de fases (estado)
 
 - [x] F0 — Migración a TypeScript + tooling (vitest, zod, bcryptjs, supabase-js)
-- [ ] F1 — Datos + auth: schema.sql, lib (supabase/session/auth/ratelimit), proxy.ts, /login, /privacidad, /terminos, Footer, seed-admin
+- [x] F1 — Datos + auth: schema.sql, lib (supabase/session/auth/ratelimit), proxy.ts, /login, /privacidad, /terminos, Footer, seed-admin
 - [ ] F2 — Admin: torneos y equipos · Usuarios de equipo + /equipo/plantilla (CRUD con límite)
 - [ ] F3 — Calendario admin + captura de resultados/goles + /calendario público
 - [ ] F4 — Tablas públicas: /tabla (standings con desempates), /goleo, /equipos/[id], home real
