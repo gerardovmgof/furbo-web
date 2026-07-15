@@ -16,7 +16,9 @@ export const metadata = {
   description: "Plataforma de gestión de ligas de fútbol",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="es"
