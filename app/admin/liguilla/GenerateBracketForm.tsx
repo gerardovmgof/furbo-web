@@ -22,6 +22,10 @@ export default function GenerateBracketForm({ tournamentId }: { tournamentId: st
             <input type="radio" name="playoffTeams" value="8" className="accent-emerald-600" />
             8
           </label>
+          <label className="flex items-center gap-2 text-sm text-zinc-200">
+            <input type="radio" name="playoffTeams" value="16" className="accent-emerald-600" />
+            16
+          </label>
         </div>
       </div>
       <label className="flex items-center gap-2 text-sm text-zinc-200">

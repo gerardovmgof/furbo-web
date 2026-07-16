@@ -1,6 +1,7 @@
 import { listTournaments, listTeamsByTournament, activePlayerCounts } from "@/lib/queries";
 import { setTeamStatusAction } from "./actions";
 import CreateTeamForm from "./CreateTeamForm";
+import EditTeamForm from "./EditTeamForm";
 import TournamentSelect from "@/components/TournamentSelect";
 
 export default async function EquiposPage({
@@ -68,20 +69,27 @@ export default async function EquiposPage({
                     {used}/{team.player_limit} jugadores registrados
                   </p>
                 </div>
-                <form
-                  action={setTeamStatusAction.bind(
-                    null,
-                    team.id,
-                    team.status === "active" ? "withdrawn" : "active"
-                  )}
-                >
-                  <button
-                    type="submit"
-                    className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800"
+                <div className="flex gap-2">
+                  <EditTeamForm
+                    teamId={team.id}
+                    currentName={team.name}
+                    currentPlayerLimit={team.player_limit}
+                  />
+                  <form
+                    action={setTeamStatusAction.bind(
+                      null,
+                      team.id,
+                      team.status === "active" ? "withdrawn" : "active"
+                    )}
                   >
-                    {team.status === "active" ? "Retirar del torneo" : "Reactivar"}
-                  </button>
-                </form>
+                    <button
+                      type="submit"
+                      className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800"
+                    >
+                      {team.status === "active" ? "Retirar del torneo" : "Reactivar"}
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           );

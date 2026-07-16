@@ -17,11 +17,11 @@ export default function PublicTabs() {
 
   return (
     <header className="border-b border-zinc-800">
-      <div className="mx-auto flex max-w-3xl items-center gap-1 overflow-x-auto px-4 py-3">
-        <Link href="/" className="mr-3 shrink-0 font-semibold text-zinc-100">
+      <div className="mx-auto flex max-w-3xl items-center gap-2 px-4 py-3">
+        <Link href="/" className="mr-1 shrink-0 font-semibold text-zinc-100">
           ⚽ Furbo Web
         </Link>
-        <nav className="flex gap-1">
+        <nav className="flex flex-1 gap-1 overflow-x-auto">
           {TABS.map((tab) => {
             const active = tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
             return (
@@ -39,6 +39,12 @@ export default function PublicTabs() {
             );
           })}
         </nav>
+        <Link
+          href="/login"
+          className="shrink-0 rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 transition hover:bg-zinc-800"
+        >
+          Acceso
+        </Link>
       </div>
     </header>
   );

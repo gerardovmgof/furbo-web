@@ -5,6 +5,7 @@ import type { SeriesLeg } from "@/lib/bracket";
 const T = (n: number) => `team-${n}`;
 const SEEDS_8 = Array.from({ length: 8 }, (_, i) => T(i + 1)); // team-1 = seed1 ... team-8 = seed8
 const SEEDS_4 = Array.from({ length: 4 }, (_, i) => T(i + 1));
+const SEEDS_16 = Array.from({ length: 16 }, (_, i) => T(i + 1));
 
 describe("generateBracket — 4 equipos", () => {
   it("cruces de la ronda 1: 1v4 y 2v3, partido único", () => {
@@ -78,6 +79,44 @@ describe("generateBracket — 8 equipos", () => {
   });
 });
 
+describe("generateBracket — 16 equipos", () => {
+  it("cruces de octavos: 1v16, 8v9, 4v13, 5v12, 2v15, 7v10, 3v14, 6v11", () => {
+    const plans = generateBracket(SEEDS_16, false);
+    const r16 = plans.filter((p) => p.round === 1);
+    expect(r16).toHaveLength(8);
+    const pair = (slot: number) => {
+      const m = r16.find((p) => p.bracketSlot === slot)!;
+      return [m.homeTeamId, m.awayTeamId];
+    };
+    expect(pair(1)).toEqual([T(1), T(16)]);
+    expect(pair(2)).toEqual([T(8), T(9)]);
+    expect(pair(3)).toEqual([T(4), T(13)]);
+    expect(pair(4)).toEqual([T(5), T(12)]);
+    expect(pair(5)).toEqual([T(2), T(15)]);
+    expect(pair(6)).toEqual([T(7), T(10)]);
+    expect(pair(7)).toEqual([T(3), T(14)]);
+    expect(pair(8)).toEqual([T(6), T(11)]);
+  });
+
+  it("genera cuartos (9-12), semis (13-14) y final (15) vacíos", () => {
+    const plans = generateBracket(SEEDS_16, false);
+    const qf = plans.filter((p) => p.round === 2);
+    const sf = plans.filter((p) => p.round === 3);
+    const final = plans.filter((p) => p.round === 4);
+    expect(qf.map((p) => p.bracketSlot).sort((a, b) => a - b)).toEqual([9, 10, 11, 12]);
+    expect(sf.map((p) => p.bracketSlot).sort((a, b) => a - b)).toEqual([13, 14]);
+    expect(final.map((p) => p.bracketSlot)).toEqual([15]);
+    expect(
+      [...qf, ...sf, ...final].every((p) => p.homeTeamId === null && p.awayTeamId === null)
+    ).toBe(true);
+  });
+
+  it("total de partidos partido único: 8+4+2+1 = 15", () => {
+    const plans = generateBracket(SEEDS_16, false);
+    expect(plans).toHaveLength(15);
+  });
+});
+
 describe("nextSlot", () => {
   it("mapea correctamente el bracket de 8", () => {
     expect(nextSlot(1, 8)).toEqual({ slot: 5, isPrimary: true });
@@ -95,7 +134,30 @@ describe("nextSlot", () => {
     expect(nextSlot(3, 4)).toBeNull();
   });
 
+  it("mapea correctamente el bracket de 16", () => {
+    // Octavos (1-8) -> Cuartos (9-12)
+    expect(nextSlot(1, 16)).toEqual({ slot: 9, isPrimary: true });
+    expect(nextSlot(2, 16)).toEqual({ slot: 9, isPrimary: false });
+    expect(nextSlot(3, 16)).toEqual({ slot: 10, isPrimary: true });
+    expect(nextSlot(4, 16)).toEqual({ slot: 10, isPrimary: false });
+    expect(nextSlot(5, 16)).toEqual({ slot: 11, isPrimary: true });
+    expect(nextSlot(6, 16)).toEqual({ slot: 11, isPrimary: false });
+    expect(nextSlot(7, 16)).toEqual({ slot: 12, isPrimary: true });
+    expect(nextSlot(8, 16)).toEqual({ slot: 12, isPrimary: false });
+    // Cuartos (9-12) -> Semis (13-14)
+    expect(nextSlot(9, 16)).toEqual({ slot: 13, isPrimary: true });
+    expect(nextSlot(10, 16)).toEqual({ slot: 13, isPrimary: false });
+    expect(nextSlot(11, 16)).toEqual({ slot: 14, isPrimary: true });
+    expect(nextSlot(12, 16)).toEqual({ slot: 14, isPrimary: false });
+    // Semis (13-14) -> Final (15)
+    expect(nextSlot(13, 16)).toEqual({ slot: 15, isPrimary: true });
+    expect(nextSlot(14, 16)).toEqual({ slot: 15, isPrimary: false });
+    // Final no avanza a nada
+    expect(nextSlot(15, 16)).toBeNull();
+  });
+
   it("finalSlot devuelve el slot correcto según el tamaño", () => {
+    expect(finalSlot(16)).toBe(15);
     expect(finalSlot(8)).toBe(7);
     expect(finalSlot(4)).toBe(3);
   });

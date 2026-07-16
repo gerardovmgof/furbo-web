@@ -1,6 +1,7 @@
 import { listTournaments } from "@/lib/queries";
 import { toggleRegistrationAction, setTournamentStatusAction } from "./actions";
 import CreateTournamentForm from "./CreateTournamentForm";
+import EditTournamentForm from "./EditTournamentForm";
 
 const STATUS_LABEL: Record<string, string> = {
   draft: "Borrador",
@@ -51,6 +52,7 @@ export default async function TorneosPage() {
             </div>
 
             <div className="mt-3 flex flex-wrap gap-2">
+              <EditTournamentForm tournamentId={t.id} currentName={t.name} />
               <form
                 action={toggleRegistrationAction.bind(null, t.id, !t.registration_open)}
               >

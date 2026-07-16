@@ -46,6 +46,51 @@ export async function createMatchAction(
   return { error: null };
 }
 
+export async function editMatchAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  await requireAdmin();
+
+  const matchIdParsed = uuidSchema.safeParse(formData.get("matchId"));
+  const parsed = matchSchema.safeParse({
+    round: formData.get("round"),
+    homeTeamId: formData.get("homeTeamId"),
+    awayTeamId: formData.get("awayTeamId"),
+    kickoffAt: formData.get("kickoffAt") || undefined,
+    venue: formData.get("venue") || undefined,
+  });
+  if (!matchIdParsed.success) return { error: "Partido inválido." };
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Datos inválidos." };
+  }
+
+  // Solo se puede editar rival/fecha/jornada mientras el partido no se haya
+  // jugado — cambiar los equipos de un partido con resultado dejaría goles
+  // huérfanos apuntando al equipo equivocado.
+  const { error, data } = await supabase
+    .from("matches")
+    .update({
+      round: parsed.data.round,
+      home_team_id: parsed.data.homeTeamId,
+      away_team_id: parsed.data.awayTeamId,
+      kickoff_at: parsed.data.kickoffAt ? new Date(parsed.data.kickoffAt).toISOString() : null,
+      venue: parsed.data.venue || null,
+    })
+    .eq("id", matchIdParsed.data)
+    .neq("status", "played")
+    .select()
+    .maybeSingle();
+  if (error) return { error: "No se pudo actualizar el partido." };
+  if (!data) {
+    return { error: "Este partido ya se jugó — no se puede editar, solo corregir el resultado." };
+  }
+
+  revalidatePath("/admin/calendario");
+  revalidatePath("/calendario");
+  return { error: null };
+}
+
 export async function setMatchStatusAction(
   matchId: string,
   status: "scheduled" | "postponed"

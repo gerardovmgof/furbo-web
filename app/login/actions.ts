@@ -32,5 +32,5 @@ export async function loginAction(
 
 export async function logoutAction(): Promise<void> {
   await logout();
-  redirect("/login");
+  redirect("/");
 }

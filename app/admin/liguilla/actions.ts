@@ -23,10 +23,10 @@ export async function generateBracketAction(
   const tournamentId = tournamentIdParsed.data;
 
   const playoffTeamsRaw = Number(formData.get("playoffTeams"));
-  if (playoffTeamsRaw !== 4 && playoffTeamsRaw !== 8) {
-    return { error: "Elige 4 u 8 equipos." };
+  if (playoffTeamsRaw !== 4 && playoffTeamsRaw !== 8 && playoffTeamsRaw !== 16) {
+    return { error: "Elige 4, 8 o 16 equipos." };
   }
-  const playoffTeams = playoffTeamsRaw as 4 | 8;
+  const playoffTeams = playoffTeamsRaw as 4 | 8 | 16;
   const twoLegs = formData.get("twoLegs") === "on";
 
   const tournament = await getTournament(tournamentId);

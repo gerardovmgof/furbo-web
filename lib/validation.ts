@@ -75,6 +75,16 @@ export const resetPasswordSchema = z.object({
   password: newPasswordSchema,
 });
 
+export const editTeamUserSchema = z.object({
+  userId: z.string().uuid(),
+  teamId: z.string().uuid("Selecciona un equipo."),
+  username: z
+    .string()
+    .trim()
+    .min(3, "El usuario debe tener al menos 3 caracteres.")
+    .max(40, "El usuario es demasiado largo."),
+});
+
 export const uuidSchema = z.string().uuid();
 
 export const matchSchema = z

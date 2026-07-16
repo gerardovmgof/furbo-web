@@ -12,7 +12,7 @@ export interface TournamentRow {
   name: string;
   status: TournamentStatus;
   registration_open: boolean;
-  playoff_teams: 4 | 8 | null;
+  playoff_teams: 4 | 8 | 16 | null;
   playoff_two_legs: boolean | null;
   created_at: string;
   updated_at: string;

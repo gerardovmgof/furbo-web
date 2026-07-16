@@ -1,9 +1,16 @@
 import { getPublicTournament, listMatchesByTournament } from "@/lib/queries";
+import type { BracketSize } from "@/lib/bracket";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Liguilla — Furbo Web" };
 
-function roundLabel(round: number, playoffTeams: 4 | 8): string {
+function roundLabel(round: number, playoffTeams: BracketSize): string {
+  if (playoffTeams === 16) {
+    return (
+      { 1: "Octavos de final", 2: "Cuartos de final", 3: "Semifinal", 4: "Final" }[round] ??
+      `Ronda ${round}`
+    );
+  }
   if (playoffTeams === 8) {
     return { 1: "Cuartos de final", 2: "Semifinal", 3: "Final" }[round] ?? `Ronda ${round}`;
   }

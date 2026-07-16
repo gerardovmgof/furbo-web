@@ -3,10 +3,42 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin, hashPassword } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { createTeamUserSchema, resetPasswordSchema } from "@/lib/validation";
+import { createTeamUserSchema, resetPasswordSchema, editTeamUserSchema } from "@/lib/validation";
 
 export interface FormState {
   error: string | null;
+}
+
+export async function editTeamUserAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  await requireAdmin();
+
+  const parsed = editTeamUserSchema.safeParse({
+    userId: formData.get("userId"),
+    teamId: formData.get("teamId"),
+    username: formData.get("username"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Datos inválidos." };
+  }
+
+  const { error } = await supabase
+    .from("users")
+    .update({
+      username: parsed.data.username.trim().toLowerCase(),
+      team_id: parsed.data.teamId,
+    })
+    .eq("id", parsed.data.userId);
+  if (error) {
+    const message =
+      error.code === "23505" ? "Ese nombre de usuario ya existe." : "No se pudo actualizar el delegado.";
+    return { error: message };
+  }
+
+  revalidatePath("/admin/usuarios");
+  return { error: null };
 }
 
 export async function createTeamUserAction(

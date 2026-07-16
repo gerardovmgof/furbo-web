@@ -31,6 +31,29 @@ export async function createTournamentAction(
   return { error: null };
 }
 
+export async function editTournamentAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  await requireAdmin();
+
+  const idParsed = uuidSchema.safeParse(formData.get("tournamentId"));
+  const parsed = tournamentSchema.safeParse({ name: formData.get("name") });
+  if (!idParsed.success) return { error: "Torneo inválido." };
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Datos inválidos." };
+  }
+
+  const { error } = await supabase
+    .from("tournaments")
+    .update({ name: parsed.data.name })
+    .eq("id", idParsed.data);
+  if (error) return { error: "No se pudo actualizar el torneo." };
+
+  revalidatePath("/admin/torneos");
+  return { error: null };
+}
+
 export async function toggleRegistrationAction(
   tournamentId: string,
   nextValue: boolean

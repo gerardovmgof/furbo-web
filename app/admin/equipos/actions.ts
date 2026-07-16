@@ -40,6 +40,47 @@ export async function createTeamAction(
   return { error: null };
 }
 
+export async function editTeamAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  await requireAdmin();
+
+  const idParsed = uuidSchema.safeParse(formData.get("teamId"));
+  const parsed = teamSchema.safeParse({
+    name: formData.get("name"),
+    playerLimit: formData.get("playerLimit"),
+  });
+  if (!idParsed.success) return { error: "Equipo inválido." };
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Datos inválidos." };
+  }
+
+  const { count } = await supabase
+    .from("players")
+    .select("id", { count: "exact", head: true })
+    .eq("team_id", idParsed.data)
+    .eq("active", true);
+  if ((count ?? 0) > parsed.data.playerLimit) {
+    return {
+      error: `Ya hay ${count} jugadores registrados; el límite no puede ser menor a eso.`,
+    };
+  }
+
+  const { error } = await supabase
+    .from("teams")
+    .update({ name: parsed.data.name, player_limit: parsed.data.playerLimit })
+    .eq("id", idParsed.data);
+  if (error) {
+    const message =
+      error.code === "23505" ? "Ya existe un equipo con ese nombre en este torneo." : "No se pudo actualizar el equipo.";
+    return { error: message };
+  }
+
+  revalidatePath("/admin/equipos");
+  return { error: null };
+}
+
 export async function setTeamStatusAction(
   teamId: string,
   status: "active" | "withdrawn"

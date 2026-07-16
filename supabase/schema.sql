@@ -19,7 +19,7 @@ create table tournaments (
   status            text not null default 'draft'
                     check (status in ('draft','regular','playoffs','finished')),
   registration_open boolean not null default true,    -- ventana de altas de jugadores
-  playoff_teams     smallint check (playoff_teams in (4, 8)),  -- null hasta generar liguilla
+  playoff_teams     smallint check (playoff_teams in (4, 8, 16)),  -- null hasta generar liguilla
   playoff_two_legs  boolean,                          -- ida y vuelta (elección del admin)
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now()

@@ -1,8 +1,15 @@
 import { listTournaments, listMatchesByTournament } from "@/lib/queries";
+import type { BracketSize } from "@/lib/bracket";
 import GenerateBracketForm from "./GenerateBracketForm";
 import TournamentSelect from "@/components/TournamentSelect";
 
-function roundLabel(round: number, playoffTeams: 4 | 8): string {
+function roundLabel(round: number, playoffTeams: BracketSize): string {
+  if (playoffTeams === 16) {
+    return (
+      { 1: "Octavos de final", 2: "Cuartos de final", 3: "Semifinal", 4: "Final" }[round] ??
+      `Ronda ${round}`
+    );
+  }
   if (playoffTeams === 8) {
     return { 1: "Cuartos de final", 2: "Semifinal", 3: "Final" }[round] ?? `Ronda ${round}`;
   }
@@ -78,7 +85,7 @@ async function BracketView({
   playoffTeams,
 }: {
   tournamentId: string;
-  playoffTeams: 4 | 8;
+  playoffTeams: BracketSize;
 }) {
   const matches = await listMatchesByTournament(tournamentId, "playoff");
   const rounds = [...new Set(matches.map((m) => m.round))].sort((a, b) => a - b);

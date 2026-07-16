@@ -10,9 +10,6 @@ export default function Footer() {
         <Link href="/terminos" className="hover:text-zinc-300">
           Términos y condiciones
         </Link>
-        <Link href="/login" className="hover:text-zinc-300">
-          Acceso
-        </Link>
       </nav>
       <p>Furbo Web — gestión de ligas de fútbol amateur.</p>
     </footer>

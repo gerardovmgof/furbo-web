@@ -1,6 +1,7 @@
 import { listActiveTeamsWithTournament, listTeamUsers } from "@/lib/queries";
 import CreateUserForm from "./CreateUserForm";
 import ResetPasswordForm from "./ResetPasswordForm";
+import EditTeamUserForm from "./EditTeamUserForm";
 
 export default async function UsuariosPage() {
   const [teams, users] = await Promise.all([listActiveTeamsWithTournament(), listTeamUsers()]);
@@ -30,7 +31,15 @@ export default async function UsuariosPage() {
                   {u.team_name} · {u.tournament_name}
                 </p>
               </div>
-              <ResetPasswordForm userId={u.id} />
+              <div className="flex flex-wrap gap-2">
+                <EditTeamUserForm
+                  userId={u.id}
+                  currentUsername={u.username}
+                  currentTeamId={u.team_id ?? ""}
+                  teams={teams}
+                />
+                <ResetPasswordForm userId={u.id} />
+              </div>
             </div>
           </div>
         ))}
