@@ -1,6 +1,7 @@
 // Rate limiting de login sobre la tabla login_attempts (Postgres).
 // Regla: ≥5 fallos por username O ≥20 fallos por IP en los últimos 15 minutos → bloquear.
 
+import "server-only";
 import { supabase } from "@/lib/supabase";
 
 const WINDOW_MINUTES = 15;

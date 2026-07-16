@@ -4,6 +4,7 @@
 //
 // Formato: base64url(JSON payload) + "." + base64url(HMAC-SHA256(payload, SESSION_SECRET))
 
+import "server-only";
 import type { SessionPayload } from "@/lib/types";
 
 export const SESSION_COOKIE = "furbo_session";

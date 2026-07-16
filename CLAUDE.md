@@ -63,7 +63,11 @@ Reglas obligatorias para Claude en cada sesión:
 - [x] F3 — Calendario admin + captura de resultados/goles + /calendario público
 - [x] F4 — Tablas públicas: /tabla (standings con desempates), /goleo, /equipos/[id], /equipos, home real, Tabs de navegación pública
 - [x] F5 — Liguilla: generación de bracket, captura playoff con penales y propagación, /liguilla
-- [ ] F6 — Endurecimiento: headers de seguridad, checklist, pulido móvil, E2E completo
+- [x] F6 — Endurecimiento: headers de seguridad (CSP, HSTS, etc.), guards server-only, checklist, pulido móvil, E2E completo
+
+## Núcleo de la app: completo (F0–F6)
+
+Torneos, equipos, delegados, calendario, resultados, tablas públicas y liguilla — todo en producción. Próximas ideas (permisos más finos, ajustes de navegación, lo que surja con uso real) se agregan aquí como nuevas fases cuando se definan.
 
 Marca la casilla correspondiente en este archivo al completar una fase (en el mismo commit).
 
