@@ -166,6 +166,16 @@ begin
 end;
 $$ language plpgsql;
 
+-- ---------- RPC: reset de contraseña atómico ----------
+-- Cambia el hash y bumpea token_version en la misma sentencia: mata todas
+-- las sesiones vigentes de ese usuario (p.ej. si se filtró la contraseña).
+create or replace function reset_user_password(p_user_id uuid, p_password_hash text)
+returns users as $$
+  update users set password_hash = p_password_hash, token_version = token_version + 1
+  where id = p_user_id
+  returning *;
+$$ language sql;
+
 -- ---------- RLS deny-all (defensa en profundidad) ----------
 -- Solo el servidor con service-role key (que ignora RLS) accede a los datos.
 -- Sin políticas = nadie con anon key puede leer/escribir nada.

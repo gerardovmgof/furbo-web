@@ -59,3 +59,20 @@ export const scoreSchema = z.object({
   homeScore: z.coerce.number().int().min(0).max(99),
   awayScore: z.coerce.number().int().min(0).max(99),
 });
+
+export const createTeamUserSchema = z.object({
+  teamId: z.string().uuid("Selecciona un equipo."),
+  username: z
+    .string()
+    .trim()
+    .min(3, "El usuario debe tener al menos 3 caracteres.")
+    .max(40, "El usuario es demasiado largo."),
+  password: newPasswordSchema,
+});
+
+export const resetPasswordSchema = z.object({
+  userId: z.string().uuid(),
+  password: newPasswordSchema,
+});
+
+export const uuidSchema = z.string().uuid();
