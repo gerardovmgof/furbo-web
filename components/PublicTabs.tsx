@@ -9,6 +9,7 @@ const TABS = [
   { href: "/goleo", label: "Goleo" },
   { href: "/calendario", label: "Calendario" },
   { href: "/equipos", label: "Equipos" },
+  { href: "/liguilla", label: "Liguilla" },
 ];
 
 export default function PublicTabs() {

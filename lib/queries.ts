@@ -127,6 +127,20 @@ export async function getMatch(matchId: string): Promise<MatchRow | null> {
   return (data as MatchRow) ?? null;
 }
 
+/** Los 1 o 2 partidos (ida/vuelta) de un mismo cruce de liguilla. */
+export async function listLegsForSlot(
+  tournamentId: string,
+  bracketSlot: number
+): Promise<MatchRow[]> {
+  const { data } = await supabase
+    .from("matches")
+    .select("*")
+    .eq("tournament_id", tournamentId)
+    .eq("bracket_slot", bracketSlot)
+    .order("leg", { ascending: true });
+  return (data as MatchRow[]) ?? [];
+}
+
 export async function teamNamesById(teamIds: string[]): Promise<Record<string, string>> {
   if (teamIds.length === 0) return {};
   const { data } = await supabase.from("teams").select("id, name").in("id", teamIds);

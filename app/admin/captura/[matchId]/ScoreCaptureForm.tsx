@@ -16,6 +16,9 @@ export default function ScoreCaptureForm({
   initialHomeScore,
   initialAwayScore,
   initialForfeit,
+  isPlayoff,
+  initialHomePenalties,
+  initialAwayPenalties,
 }: {
   matchId: string;
   homeTeam: { id: string; name: string };
@@ -26,6 +29,9 @@ export default function ScoreCaptureForm({
   initialHomeScore: number | null;
   initialAwayScore: number | null;
   initialForfeit: boolean;
+  isPlayoff?: boolean;
+  initialHomePenalties?: number | null;
+  initialAwayPenalties?: number | null;
 }) {
   const [state, formAction, pending] = useActionState(captureResultAction, initialState);
   const [forfeit, setForfeit] = useState(initialForfeit);
@@ -81,6 +87,35 @@ export default function ScoreCaptureForm({
           />
         </div>
       </div>
+
+      {isPlayoff && !forfeit && (
+        <div>
+          <p className="mb-2 text-center text-sm text-zinc-400">
+            Penales (solo si el cruce terminó empatado en el global)
+          </p>
+          <div className="flex items-center justify-center gap-4">
+            <input
+              name="homePenalties"
+              type="number"
+              min={0}
+              max={99}
+              defaultValue={initialHomePenalties ?? ""}
+              placeholder="—"
+              className="w-16 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-center text-zinc-100 outline-none focus:border-emerald-500"
+            />
+            <span className="text-zinc-500">—</span>
+            <input
+              name="awayPenalties"
+              type="number"
+              min={0}
+              max={99}
+              defaultValue={initialAwayPenalties ?? ""}
+              placeholder="—"
+              className="w-16 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-center text-zinc-100 outline-none focus:border-emerald-500"
+            />
+          </div>
+        </div>
+      )}
 
       {!forfeit && (
         <div className="grid gap-6 sm:grid-cols-2">

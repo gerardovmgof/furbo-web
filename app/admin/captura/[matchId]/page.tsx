@@ -9,10 +9,23 @@ export default async function CapturaPage({
   const { matchId } = await params;
   const match = await getMatch(matchId);
 
-  if (!match || !match.home_team_id || !match.away_team_id) {
+  if (!match) {
     return (
       <main className="mx-auto max-w-md py-8">
         <p className="text-zinc-400">No se encontró el partido.</p>
+      </main>
+    );
+  }
+
+  if (!match.home_team_id || !match.away_team_id) {
+    return (
+      <main className="mx-auto max-w-md py-8">
+        <p className="text-zinc-400">
+          Este cruce aún no está definido — falta que se resuelva la ronda anterior.
+        </p>
+        <a href="/admin/liguilla" className="mt-3 inline-block text-sm text-emerald-400 underline">
+          ← Volver a la liguilla
+        </a>
       </main>
     );
   }
@@ -26,6 +39,7 @@ export default async function CapturaPage({
 
   const homeTeam = { id: match.home_team_id, name: names[match.home_team_id] ?? "Equipo" };
   const awayTeam = { id: match.away_team_id, name: names[match.away_team_id] ?? "Equipo" };
+  const isPlayoff = match.phase === "playoff";
 
   return (
     <main className="mx-auto max-w-2xl space-y-6 py-8">
@@ -33,7 +47,11 @@ export default async function CapturaPage({
         <h1 className="text-2xl font-bold">
           {homeTeam.name} vs {awayTeam.name}
         </h1>
-        <p className="mt-1 text-sm text-zinc-400">Jornada {match.round}</p>
+        <p className="mt-1 text-sm text-zinc-400">
+          {isPlayoff
+            ? `Liguilla · ronda ${match.round}${match.leg === 2 ? " · vuelta" : ""}`
+            : `Jornada ${match.round}`}
+        </p>
       </div>
 
       <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
@@ -47,11 +65,17 @@ export default async function CapturaPage({
           initialHomeScore={match.home_score}
           initialAwayScore={match.away_score}
           initialForfeit={match.is_forfeit}
+          isPlayoff={isPlayoff}
+          initialHomePenalties={match.home_penalties}
+          initialAwayPenalties={match.away_penalties}
         />
       </div>
 
-      <a href="/admin/calendario" className="text-sm text-emerald-400 underline">
-        ← Volver al calendario
+      <a
+        href={isPlayoff ? "/admin/liguilla" : "/admin/calendario"}
+        className="text-sm text-emerald-400 underline"
+      >
+        ← Volver
       </a>
     </main>
   );

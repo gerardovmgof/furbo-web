@@ -3,6 +3,7 @@ const LINKS = [
   { href: "/admin/equipos", label: "Equipos", desc: "Altas, límite de registros, retiros." },
   { href: "/admin/usuarios", label: "Usuarios de equipo", desc: "Crear delegados y resetear contraseñas." },
   { href: "/admin/calendario", label: "Calendario", desc: "Jornadas, partidos y captura de resultados." },
+  { href: "/admin/liguilla", label: "Liguilla", desc: "Generar el bracket y capturar los playoffs." },
 ];
 
 export default function AdminHome() {
