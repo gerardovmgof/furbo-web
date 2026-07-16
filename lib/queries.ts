@@ -147,6 +147,85 @@ export async function goalsByMatch(matchId: string): Promise<Record<string, numb
   return goals;
 }
 
+export interface ScorerRow {
+  playerId: string;
+  playerName: string;
+  jerseyNumber: number;
+  teamId: string;
+  teamName: string;
+  goals: number;
+}
+
+/** Goleo del torneo (todas las fases), ordenado por goles descendente. */
+export async function topScorers(tournamentId: string): Promise<ScorerRow[]> {
+  const { data: matchRows } = await supabase
+    .from("matches")
+    .select("id")
+    .eq("tournament_id", tournamentId);
+  const matchIds = (matchRows as { id: string }[] | null)?.map((m) => m.id) ?? [];
+  if (matchIds.length === 0) return [];
+
+  const { data: goalRows } = await supabase
+    .from("goals")
+    .select("player_id, team_id, count")
+    .in("match_id", matchIds);
+  const totals = new Map<string, { teamId: string; goals: number }>();
+  for (const g of (goalRows as { player_id: string; team_id: string; count: number }[]) ?? []) {
+    const cur = totals.get(g.player_id) ?? { teamId: g.team_id, goals: 0 };
+    cur.goals += g.count;
+    totals.set(g.player_id, cur);
+  }
+  if (totals.size === 0) return [];
+
+  const playerIds = [...totals.keys()];
+  const { data: playerRows } = await supabase
+    .from("players")
+    .select("id, name, jersey_number")
+    .in("id", playerIds);
+  const players = new Map(
+    ((playerRows as { id: string; name: string; jersey_number: number }[]) ?? []).map((p) => [
+      p.id,
+      p,
+    ])
+  );
+  const names = await teamNamesById([...new Set([...totals.values()].map((v) => v.teamId))]);
+
+  const rows: ScorerRow[] = playerIds.map((playerId) => {
+    const t = totals.get(playerId)!;
+    const p = players.get(playerId);
+    return {
+      playerId,
+      playerName: p?.name ?? "Jugador",
+      jerseyNumber: p?.jersey_number ?? 0,
+      teamId: t.teamId,
+      teamName: names[t.teamId] ?? "Equipo",
+      goals: t.goals,
+    };
+  });
+
+  rows.sort((a, b) => b.goals - a.goals || a.playerName.localeCompare(b.playerName, "es"));
+  return rows;
+}
+
+export async function listMatchesByTeam(teamId: string): Promise<MatchWithTeamNames[]> {
+  const { data } = await supabase
+    .from("matches")
+    .select("*")
+    .or(`home_team_id.eq.${teamId},away_team_id.eq.${teamId}`)
+    .order("round", { ascending: true })
+    .order("created_at", { ascending: true });
+  const matches = (data as MatchRow[]) ?? [];
+  const teamIds = [...new Set(matches.flatMap((m) => [m.home_team_id, m.away_team_id]))].filter(
+    (id): id is string => Boolean(id)
+  );
+  const names = await teamNamesById(teamIds);
+  return matches.map((m) => ({
+    ...m,
+    home_name: (m.home_team_id && names[m.home_team_id]) || "Por definir",
+    away_name: (m.away_team_id && names[m.away_team_id]) || "Por definir",
+  }));
+}
+
 /** Delegados de equipo (role='team'), con el nombre de equipo y torneo embebidos. */
 export async function listTeamUsers(): Promise<
   (UserRow & { team_name: string; tournament_name: string })[]

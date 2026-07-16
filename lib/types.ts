@@ -82,6 +82,22 @@ export interface GoalRow {
   updated_at: string;
 }
 
+// Fila de la tabla de posiciones (ver lib/standings.ts)
+export interface StandingRow {
+  pos: number;
+  teamId: string;
+  name: string;
+  withdrawn: boolean;
+  jj: number;
+  jg: number;
+  je: number;
+  jp: number;
+  gf: number;
+  gc: number;
+  dif: number;
+  pts: number;
+}
+
 // Payload de la cookie de sesión firmada (ver lib/session.ts)
 export interface SessionPayload {
   uid: string;

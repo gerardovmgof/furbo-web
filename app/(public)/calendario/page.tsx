@@ -1,5 +1,7 @@
 import { getPublicTournament, listMatchesByTournament } from "@/lib/queries";
 
+export const dynamic = "force-dynamic";
+
 const STATUS_LABEL: Record<string, string> = {
   scheduled: "Programado",
   played: "Jugado",
