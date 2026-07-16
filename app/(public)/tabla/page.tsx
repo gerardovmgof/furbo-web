@@ -1,8 +1,14 @@
 import { getPublicTournament, listTeamsByTournament, listMatchesByTournament } from "@/lib/queries";
 import { computeStandings } from "@/lib/standings";
+import { getZone, suggestPlayoffTeams } from "@/lib/zones";
 
 export const metadata = { title: "Posiciones — Furbo Web" };
 export const dynamic = "force-dynamic";
+
+const ZONE_BORDER: Record<string, string> = {
+  clasifica: "border-l-4 border-l-emerald-500",
+  repechaje: "border-l-4 border-l-amber-500",
+};
 
 export default async function TablaPage() {
   const tournament = await getPublicTournament();
@@ -21,6 +27,7 @@ export default async function TablaPage() {
     listMatchesByTournament(tournament.id, "regular"),
   ]);
   const standings = computeStandings(teams, matches);
+  const playoffTeams = tournament.playoff_teams ?? suggestPlayoffTeams(teams.length);
 
   return (
     <main className="mx-auto max-w-3xl space-y-4 py-8">
@@ -49,8 +56,13 @@ export default async function TablaPage() {
               </tr>
             </thead>
             <tbody>
-              {standings.map((row) => (
-                <tr key={row.teamId} className="border-b border-zinc-900 last:border-0">
+              {standings.map((row) => {
+                const zone = getZone(row.pos, playoffTeams);
+                return (
+                <tr
+                  key={row.teamId}
+                  className={`border-b border-zinc-900 last:border-0 ${zone.kind ? ZONE_BORDER[zone.kind] : ""}`}
+                >
                   <td className="px-3 py-2 text-zinc-400">{row.pos}</td>
                   <td className="px-3 py-2 text-zinc-100">
                     <a href={`/equipos/${row.teamId}`} className="hover:text-emerald-400">
@@ -71,9 +83,23 @@ export default async function TablaPage() {
                     {row.pts}
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {playoffTeams && standings.length > 0 && (
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-400">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-2.5 w-2.5 rounded-sm bg-emerald-500" />
+            Clasifica a liguilla
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-2.5 w-2.5 rounded-sm bg-amber-500" />
+            Zona de repechaje
+          </span>
         </div>
       )}
     </main>

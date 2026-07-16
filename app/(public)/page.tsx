@@ -1,7 +1,13 @@
 import { getPublicTournament, listTeamsByTournament, listMatchesByTournament } from "@/lib/queries";
 import { computeStandings } from "@/lib/standings";
+import { getZone, suggestPlayoffTeams } from "@/lib/zones";
 
 export const dynamic = "force-dynamic";
+
+const ZONE_BORDER: Record<string, string> = {
+  clasifica: "border-l-4 border-l-emerald-500",
+  repechaje: "border-l-4 border-l-amber-500",
+};
 
 function formatKickoff(iso: string | null): string {
   if (!iso) return "Horario por definir";
@@ -31,7 +37,9 @@ export default async function Home() {
     listTeamsByTournament(tournament.id),
     listMatchesByTournament(tournament.id, "regular"),
   ]);
-  const standings = computeStandings(teams, matches).slice(0, 5);
+  const fullStandings = computeStandings(teams, matches);
+  const standings = fullStandings.slice(0, 5);
+  const playoffTeams = tournament.playoff_teams ?? suggestPlayoffTeams(teams.length);
   const upcoming = matches
     .filter((m) => m.status === "scheduled")
     .sort((a, b) => a.round - b.round)
@@ -68,19 +76,37 @@ export default async function Home() {
                 </tr>
               </thead>
               <tbody>
-                {standings.map((row) => (
-                  <tr key={row.teamId} className="border-b border-zinc-900 last:border-0">
-                    <td className="px-3 py-2 text-zinc-400">{row.pos}</td>
-                    <td className="px-3 py-2 text-zinc-100">{row.name}</td>
-                    <td className="px-2 py-2 text-center text-zinc-300">{row.jj}</td>
-                    <td className="px-2 py-2 text-center text-zinc-300">{row.dif}</td>
-                    <td className="px-3 py-2 text-center font-semibold text-zinc-100">
-                      {row.pts}
-                    </td>
-                  </tr>
-                ))}
+                {standings.map((row) => {
+                  const zone = getZone(row.pos, playoffTeams);
+                  return (
+                    <tr
+                      key={row.teamId}
+                      className={`border-b border-zinc-900 last:border-0 ${zone.kind ? ZONE_BORDER[zone.kind] : ""}`}
+                    >
+                      <td className="px-3 py-2 text-zinc-400">{row.pos}</td>
+                      <td className="px-3 py-2 text-zinc-100">{row.name}</td>
+                      <td className="px-2 py-2 text-center text-zinc-300">{row.jj}</td>
+                      <td className="px-2 py-2 text-center text-zinc-300">{row.dif}</td>
+                      <td className="px-3 py-2 text-center font-semibold text-zinc-100">
+                        {row.pts}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
+          </div>
+        )}
+        {playoffTeams && fullStandings.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block h-2.5 w-2.5 rounded-sm bg-emerald-500" />
+              Clasifica a liguilla
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block h-2.5 w-2.5 rounded-sm bg-amber-500" />
+              Zona de repechaje
+            </span>
           </div>
         )}
       </div>
