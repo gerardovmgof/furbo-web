@@ -2,6 +2,7 @@ const LINKS = [
   { href: "/admin/torneos", label: "Torneos", desc: "Crear y administrar torneos." },
   { href: "/admin/equipos", label: "Equipos", desc: "Altas, límite de registros, retiros." },
   { href: "/admin/usuarios", label: "Usuarios de equipo", desc: "Crear delegados y resetear contraseñas." },
+  { href: "/admin/calendario", label: "Calendario", desc: "Jornadas, partidos y captura de resultados." },
 ];
 
 export default function AdminHome() {
@@ -12,7 +13,7 @@ export default function AdminHome() {
         Da de alta un torneo, sus equipos, y crea un usuario por cada delegado.
       </p>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
         {LINKS.map((link) => (
           <a
             key={link.href}

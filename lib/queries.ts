@@ -3,7 +3,7 @@
 
 import "server-only";
 import { supabase } from "@/lib/supabase";
-import type { TeamRow, TournamentRow, UserRow, PlayerRow } from "@/lib/types";
+import type { TeamRow, TournamentRow, UserRow, PlayerRow, MatchRow } from "@/lib/types";
 
 export async function listTournaments(): Promise<TournamentRow[]> {
   const { data } = await supabase
@@ -70,6 +70,81 @@ export async function listActivePlayersByTeam(teamId: string): Promise<PlayerRow
     .eq("active", true)
     .order("jersey_number", { ascending: true });
   return (data as PlayerRow[]) ?? [];
+}
+
+/**
+ * El torneo a mostrar en las páginas públicas: prioriza uno en curso
+ * (fase regular o liguilla); si no hay, cae al más reciente.
+ */
+export async function getPublicTournament(): Promise<TournamentRow | null> {
+  const { data: active } = await supabase
+    .from("tournaments")
+    .select("*")
+    .in("status", ["regular", "playoffs"])
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (active) return active as TournamentRow;
+
+  const { data: latest } = await supabase
+    .from("tournaments")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return (latest as TournamentRow) ?? null;
+}
+
+export type MatchWithTeamNames = MatchRow & { home_name: string; away_name: string };
+
+export async function listMatchesByTournament(
+  tournamentId: string,
+  phase: "regular" | "playoff" = "regular"
+): Promise<MatchWithTeamNames[]> {
+  const { data } = await supabase
+    .from("matches")
+    .select("*")
+    .eq("tournament_id", tournamentId)
+    .eq("phase", phase)
+    .order("round", { ascending: true })
+    .order("created_at", { ascending: true });
+  const matches = (data as MatchRow[]) ?? [];
+
+  const teamIds = [...new Set(matches.flatMap((m) => [m.home_team_id, m.away_team_id]))].filter(
+    (id): id is string => Boolean(id)
+  );
+  const names = await teamNamesById(teamIds);
+
+  return matches.map((m) => ({
+    ...m,
+    home_name: (m.home_team_id && names[m.home_team_id]) || "Por definir",
+    away_name: (m.away_team_id && names[m.away_team_id]) || "Por definir",
+  }));
+}
+
+export async function getMatch(matchId: string): Promise<MatchRow | null> {
+  const { data } = await supabase.from("matches").select("*").eq("id", matchId).maybeSingle();
+  return (data as MatchRow) ?? null;
+}
+
+export async function teamNamesById(teamIds: string[]): Promise<Record<string, string>> {
+  if (teamIds.length === 0) return {};
+  const { data } = await supabase.from("teams").select("id, name").in("id", teamIds);
+  const names: Record<string, string> = {};
+  for (const t of (data as { id: string; name: string }[]) ?? []) names[t.id] = t.name;
+  return names;
+}
+
+export async function goalsByMatch(matchId: string): Promise<Record<string, number>> {
+  const { data } = await supabase
+    .from("goals")
+    .select("player_id, count")
+    .eq("match_id", matchId);
+  const goals: Record<string, number> = {};
+  for (const g of (data as { player_id: string; count: number }[]) ?? []) {
+    goals[g.player_id] = g.count;
+  }
+  return goals;
 }
 
 /** Delegados de equipo (role='team'), con el nombre de equipo y torneo embebidos. */

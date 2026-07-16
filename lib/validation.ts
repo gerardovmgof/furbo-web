@@ -76,3 +76,20 @@ export const resetPasswordSchema = z.object({
 });
 
 export const uuidSchema = z.string().uuid();
+
+export const matchSchema = z
+  .object({
+    round: z.coerce
+      .number()
+      .int("La jornada debe ser un número entero.")
+      .min(1, "La jornada mínima es 1.")
+      .max(99, "La jornada máxima es 99."),
+    homeTeamId: z.string().uuid("Selecciona el equipo local."),
+    awayTeamId: z.string().uuid("Selecciona el equipo visitante."),
+    kickoffAt: z.string().trim().optional(),
+    venue: z.string().trim().max(120, "La cancha es demasiado larga.").optional(),
+  })
+  .refine((d) => d.homeTeamId !== d.awayTeamId, {
+    message: "El equipo local y visitante deben ser distintos.",
+    path: ["awayTeamId"],
+  });
