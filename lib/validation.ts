@@ -34,6 +34,10 @@ export const playerSchema = z.object({
     .max(999, "El dorsal máximo es 999."),
 });
 
+export const editPlayerSchema = playerSchema.extend({
+  playerId: z.string().uuid(),
+});
+
 export const teamSchema = z.object({
   name: z
     .string()

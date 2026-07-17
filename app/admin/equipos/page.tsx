@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { listTournaments, listTeamsByTournament, activePlayerCounts } from "@/lib/queries";
 import { setTeamStatusAction } from "./actions";
 import CreateTeamForm from "./CreateTeamForm";
@@ -70,6 +71,12 @@ export default async function EquiposPage({
                   </p>
                 </div>
                 <div className="flex gap-2">
+                  <Link
+                    href={`/admin/equipos/${team.id}`}
+                    className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800"
+                  >
+                    Jugadores
+                  </Link>
                   <EditTeamForm
                     teamId={team.id}
                     currentName={team.name}
