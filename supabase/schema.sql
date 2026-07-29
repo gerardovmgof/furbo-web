@@ -21,6 +21,7 @@ create table tournaments (
   registration_open boolean not null default true,    -- ventana de altas de jugadores
   playoff_teams     smallint check (playoff_teams in (4, 8, 16)),  -- null hasta generar liguilla
   playoff_two_legs  boolean,                          -- ida y vuelta (elección del admin)
+  slot_price_cents  integer check (slot_price_cents is null or slot_price_cents > 0), -- null = compra de cupos deshabilitada
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now()
 );
@@ -133,6 +134,33 @@ create index idx_goals_team on goals(team_id);
 create trigger trg_goals_updated before update on goals
   for each row execute function set_updated_at();
 
+-- ---------- COBROS (Mercado Pago) ----------
+-- Compra de cupos de jugador y cargos de renta de cancha. La app NUNCA
+-- guarda datos de tarjeta: Mercado Pago procesa el pago en su propio
+-- checkout y solo notifica aprobado/no vía webhook (mp_payment_id).
+create table charges (
+  id               uuid primary key default gen_random_uuid(),
+  tournament_id    uuid not null references tournaments(id) on delete restrict,
+  team_id          uuid not null references teams(id) on delete restrict,
+  kind             text not null check (kind in ('slots','rent')),
+  concept          text not null,
+  slots_count      smallint check (slots_count is null or slots_count > 0),
+  amount_cents     integer not null check (amount_cents > 0),
+  status           text not null default 'pending' check (status in ('pending','paid','canceled')),
+  mp_preference_id text,
+  mp_payment_id    text unique,             -- idempotencia del webhook
+  paid_via         text check (paid_via in ('mercadopago','manual')),
+  created_by       uuid references users(id) on delete set null,
+  paid_at          timestamptz,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now(),
+  check (kind <> 'slots' or slots_count is not null)
+);
+create index idx_charges_team on charges(team_id);
+create index idx_charges_tournament on charges(tournament_id);
+create trigger trg_charges_updated before update on charges
+  for each row execute function set_updated_at();
+
 -- ---------- RATE LIMITING DE LOGIN ----------
 create table login_attempts (
   id           bigint generated always as identity primary key,
@@ -181,6 +209,14 @@ returns users as $$
   returning *;
 $$ language sql;
 
+-- ---------- RPC: incremento atómico de player_limit (compra de cupos) ----------
+-- Un solo UPDATE es atómico ante concurrencia; se usa tanto desde el webhook
+-- de Mercado Pago como desde "marcar pagado manualmente" en el admin.
+create or replace function increment_team_player_limit(p_team_id uuid, p_amount smallint)
+returns void as $$
+  update teams set player_limit = player_limit + p_amount where id = p_team_id;
+$$ language sql;
+
 -- ---------- RLS deny-all (defensa en profundidad) ----------
 -- Solo el servidor con service-role key (que ignora RLS) accede a los datos.
 -- Sin políticas = nadie con anon key puede leer/escribir nada.
@@ -191,3 +227,4 @@ alter table players        enable row level security;
 alter table matches        enable row level security;
 alter table goals          enable row level security;
 alter table login_attempts enable row level security;
+alter table charges        enable row level security;

@@ -3,7 +3,7 @@
 
 import "server-only";
 import { supabase } from "@/lib/supabase";
-import type { TeamRow, TournamentRow, UserRow, PlayerRow, MatchRow } from "@/lib/types";
+import type { TeamRow, TournamentRow, UserRow, PlayerRow, MatchRow, ChargeRow } from "@/lib/types";
 
 export async function listTournaments(): Promise<TournamentRow[]> {
   const { data } = await supabase
@@ -248,6 +248,31 @@ export async function listReferees(): Promise<UserRow[]> {
     .eq("role", "referee")
     .order("created_at", { ascending: false });
   return (data as UserRow[]) ?? [];
+}
+
+export type ChargeWithTeamName = ChargeRow & { team_name: string };
+
+export async function listChargesByTournament(
+  tournamentId: string
+): Promise<ChargeWithTeamName[]> {
+  const { data } = await supabase
+    .from("charges")
+    .select("*, teams(name)")
+    .eq("tournament_id", tournamentId)
+    .order("created_at", { ascending: false });
+  return ((data ?? []) as (ChargeRow & { teams: { name: string } | null })[]).map((c) => ({
+    ...c,
+    team_name: c.teams?.name ?? "—",
+  }));
+}
+
+export async function listChargesByTeam(teamId: string): Promise<ChargeRow[]> {
+  const { data } = await supabase
+    .from("charges")
+    .select("*")
+    .eq("team_id", teamId)
+    .order("created_at", { ascending: false });
+  return (data as ChargeRow[]) ?? [];
 }
 
 /** Delegados de equipo (role='team'), con el nombre de equipo y torneo embebidos. */

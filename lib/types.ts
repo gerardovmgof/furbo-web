@@ -6,6 +6,9 @@ export type TeamStatus = "active" | "withdrawn";
 export type UserRole = "admin" | "team" | "referee";
 export type MatchPhase = "regular" | "playoff";
 export type MatchStatus = "scheduled" | "played" | "postponed" | "canceled";
+export type ChargeKind = "slots" | "rent";
+export type ChargeStatus = "pending" | "paid" | "canceled";
+export type PaidVia = "mercadopago" | "manual";
 
 export interface TournamentRow {
   id: string;
@@ -14,6 +17,7 @@ export interface TournamentRow {
   registration_open: boolean;
   playoff_teams: 4 | 8 | 16 | null;
   playoff_two_legs: boolean | null;
+  slot_price_cents: number | null; // null = compra de cupos deshabilitada
   created_at: string;
   updated_at: string;
 }
@@ -79,6 +83,24 @@ export interface GoalRow {
   player_id: string;
   team_id: string;
   count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ChargeRow {
+  id: string;
+  tournament_id: string;
+  team_id: string;
+  kind: ChargeKind;
+  concept: string;
+  slots_count: number | null;
+  amount_cents: number;
+  status: ChargeStatus;
+  mp_preference_id: string | null;
+  mp_payment_id: string | null;
+  paid_via: PaidVia | null;
+  created_by: string | null;
+  paid_at: string | null;
   created_at: string;
   updated_at: string;
 }

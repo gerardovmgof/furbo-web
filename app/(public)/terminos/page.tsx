@@ -17,12 +17,13 @@ export default function TerminosPage() {
       <p className="mb-4">
         La Plataforma publica información deportiva (tablas de posiciones, goleo, calendarios y
         resultados) y permite a la administración de la liga y a los delegados de equipo gestionar
-        registros de jugadores. La Plataforma{" "}
+        registros de jugadores, así como realizar ciertos pagos relacionados con la liga (compra de
+        registros de jugador, renta de cancha) a través de Mercado Pago. La Plataforma{" "}
         <strong className="text-zinc-200">
-          no procesa pagos ni almacena información bancaria o financiera
+          nunca recibe ni almacena datos de tarjetas u otra información bancaria
         </strong>
-        . Cualquier pago relacionado con la liga (inscripciones, registros, arbitrajes) se realiza
-        fuera de la Plataforma, directamente con la organización de la liga.
+        — esa información la captura directamente Mercado Pago en su propio checkout. Ver la
+        sección 7 para más detalle.
       </p>
 
       <h2 className="mb-2 mt-8 text-lg font-semibold text-zinc-100">2. Cuentas de acceso</h2>
@@ -88,7 +89,18 @@ export default function TerminosPage() {
         cualquier otra índole tomadas por la organización de la liga.
       </p>
 
-      <h2 className="mb-2 mt-8 text-lg font-semibold text-zinc-100">7. Privacidad</h2>
+      <h2 className="mb-2 mt-8 text-lg font-semibold text-zinc-100">7. Pagos con Mercado Pago</h2>
+      <p className="mb-4">
+        Cuando un dueño de equipo compra registros de jugador o paga un cargo de renta de cancha
+        generado por la administración de la liga, la Plataforma lo redirige al checkout seguro de{" "}
+        <strong className="text-zinc-200">Mercado Pago</strong> para completar el pago. La
+        Plataforma nunca ve ni guarda el número de tu tarjeta u otros datos bancarios — solo
+        registra el monto, el concepto y si el pago fue confirmado por Mercado Pago. El uso del
+        checkout de Mercado Pago también está sujeto a los términos y política de privacidad de
+        Mercado Pago.
+      </p>
+
+      <h2 className="mb-2 mt-8 text-lg font-semibold text-zinc-100">8. Privacidad</h2>
       <p className="mb-4">
         El tratamiento de datos personales se rige por nuestro{" "}
         <a href="/privacidad" className="text-emerald-400 underline hover:text-emerald-300">
@@ -97,7 +109,7 @@ export default function TerminosPage() {
         .
       </p>
 
-      <h2 className="mb-2 mt-8 text-lg font-semibold text-zinc-100">8. Modificaciones</h2>
+      <h2 className="mb-2 mt-8 text-lg font-semibold text-zinc-100">9. Modificaciones</h2>
       <p className="mb-4">
         Estos términos pueden actualizarse; los cambios se publicarán en esta página con la fecha
         de última actualización. El uso continuado de la Plataforma tras un cambio implica su

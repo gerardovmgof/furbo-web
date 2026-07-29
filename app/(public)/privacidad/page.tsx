@@ -36,10 +36,17 @@ export default function PrivacidadPage() {
           <strong className="text-zinc-200">Datos técnicos:</strong> dirección IP en los intentos de
           inicio de sesión, exclusivamente con fines de seguridad.
         </li>
+        <li>
+          <strong className="text-zinc-200">Registros de pago:</strong> cuando un equipo compra
+          registros de jugador o paga un cargo de renta de cancha, guardamos el monto, el concepto
+          y si Mercado Pago confirmó el pago. La Plataforma{" "}
+          <strong className="text-zinc-200">nunca recibe ni almacena</strong> el número de tarjeta
+          ni ningún otro dato bancario — esa información la captura directamente Mercado Pago.
+        </li>
       </ul>
       <p className="mb-4">
-        La Plataforma <strong className="text-zinc-200">no recaba</strong> datos financieros,
-        bancarios, de tarjetas de pago, domicilios, fechas de nacimiento ni datos sensibles.
+        La Plataforma <strong className="text-zinc-200">no recaba ni almacena</strong> números de
+        tarjeta u otros datos bancarios, domicilios, fechas de nacimiento ni datos sensibles.
       </p>
 
       <h2 className="mb-2 mt-8 text-lg font-semibold text-zinc-100">3. Finalidades del tratamiento</h2>
@@ -67,7 +74,9 @@ export default function PrivacidadPage() {
         No vendemos ni compartimos tus datos personales con terceros con fines publicitarios o
         comerciales. Para operar, la Plataforma utiliza proveedores de infraestructura (alojamiento
         web y base de datos) que actúan como encargados del tratamiento y almacenan la información
-        de forma segura.
+        de forma segura. Para procesar pagos, compartimos el monto y el concepto del cargo con{" "}
+        <strong className="text-zinc-200">Mercado Pago</strong> — nunca datos de tarjeta, que
+        Mercado Pago captura directamente en su propio checkout.
       </p>
 
       <h2 className="mb-2 mt-8 text-lg font-semibold text-zinc-100">6. Derechos ARCO</h2>

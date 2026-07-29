@@ -1,5 +1,6 @@
 import { requireTeamUser } from "@/lib/auth";
 import { logoutAction } from "@/app/login/actions";
+import EquipoTabs from "@/components/EquipoTabs";
 
 export default async function TeamLayout({
   children,
@@ -20,6 +21,7 @@ export default async function TeamLayout({
           </button>
         </form>
       </header>
+      <EquipoTabs />
       <div className="flex-1 p-4">{children}</div>
     </div>
   );

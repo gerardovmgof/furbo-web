@@ -104,6 +104,42 @@ export const generateScheduleSchema = z.object({
   doubleRound: z.boolean(),
 });
 
+// Los montos se capturan en pesos (con decimales) en la UI, y se convierten
+// a centavos enteros justo antes de guardarse — ver toCents() más abajo.
+export const setSlotPriceSchema = z.object({
+  tournamentId: z.string().uuid(),
+  slotPrice: z.coerce
+    .number()
+    .min(0, "El precio no puede ser negativo.")
+    .max(100_000, "El precio es demasiado alto."),
+});
+
+export const createChargeSchema = z.object({
+  teamId: z.string().uuid("Selecciona un equipo."),
+  concept: z
+    .string()
+    .trim()
+    .min(2, "Escribe un concepto.")
+    .max(120, "El concepto es demasiado largo."),
+  amount: z.coerce
+    .number()
+    .positive("El monto debe ser mayor a 0.")
+    .max(500_000, "El monto es demasiado alto."),
+});
+
+/** Pesos (con decimales) -> centavos enteros, redondeando al centavo más cercano. */
+export function toCents(pesos: number): number {
+  return Math.round(pesos * 100);
+}
+
+export const buySlotsSchema = z.object({
+  slotsCount: z.coerce
+    .number()
+    .int("La cantidad debe ser un número entero.")
+    .positive("Elige al menos 1 cupo.")
+    .max(99, "Máximo 99 cupos por compra."),
+});
+
 // El link de transmisión se valida a mano (no con un schema zod plano)
 // porque necesita distinguir "vacío = quitar el link" de "URL inválida",
 // además de revisar el dominio contra una whitelist — mismo espíritu que
