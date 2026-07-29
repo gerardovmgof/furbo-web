@@ -11,6 +11,8 @@ import { supabase } from "@/lib/supabase";
 import { getTournament } from "@/lib/queries";
 import { buySlotsSchema, uuidSchema } from "@/lib/validation";
 import { createChargePreference } from "@/lib/mercadopago";
+import { markChargePaid } from "@/lib/charges";
+import { SKIP_MERCADOPAGO_FOR_TESTING } from "@/lib/paymentsTestMode";
 
 export interface FormState {
   error: string | null;
@@ -55,6 +57,11 @@ export async function buySlotsAction(
     .single();
   if (insertError || !charge) return { error: "No se pudo crear el cargo." };
 
+  if (SKIP_MERCADOPAGO_FOR_TESTING) {
+    await markChargePaid(charge.id, "manual");
+    redirect(`/equipo/${teamId}/pagos?resultado=ok`);
+  }
+
   let initPoint: string;
   try {
     const preference = await createChargePreference({
@@ -90,6 +97,11 @@ export async function payChargeAction(teamId: string, chargeId: string): Promise
     .eq("status", "pending")
     .maybeSingle();
   if (!charge) redirect(`/equipo/${teamId}/pagos?resultado=error`);
+
+  if (SKIP_MERCADOPAGO_FOR_TESTING) {
+    await markChargePaid(charge.id, "manual");
+    redirect(`/equipo/${teamId}/pagos?resultado=ok`);
+  }
 
   let initPoint: string;
   try {

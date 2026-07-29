@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { setSlotPriceSchema, createChargeSchema, uuidSchema, toCents } from "@/lib/validation";
+import { markChargePaid } from "@/lib/charges";
 
 export interface FormState {
   error: string | null;
@@ -79,31 +80,7 @@ export async function markChargePaidManuallyAction(chargeId: string): Promise<vo
   await requireAdmin();
   const id = uuidSchema.parse(chargeId);
 
-  const { data: charge } = await supabase
-    .from("charges")
-    .select("id, kind, slots_count, team_id, status")
-    .eq("id", id)
-    .maybeSingle();
-  if (!charge || charge.status !== "pending") {
-    revalidatePath("/admin/cobros");
-    return;
-  }
-
-  const { data: updated } = await supabase
-    .from("charges")
-    .update({ status: "paid", paid_via: "manual", paid_at: new Date().toISOString() })
-    .eq("id", id)
-    .eq("status", "pending")
-    .select("id")
-    .maybeSingle();
-
-  if (updated && charge.kind === "slots" && charge.slots_count) {
-    await supabase.rpc("increment_team_player_limit", {
-      p_team_id: charge.team_id,
-      p_amount: charge.slots_count,
-    });
-  }
-
+  await markChargePaid(id, "manual");
   revalidatePath("/admin/cobros");
 }
 

@@ -7,8 +7,8 @@
 // notificación duplicada ya lo marcó 'paid', esta segunda pasada no vuelve
 // a incrementar player_limit.
 
-import { supabase } from "@/lib/supabase";
 import { getMercadoPagoPayment } from "@/lib/mercadopago";
+import { markChargePaid } from "@/lib/charges";
 
 function extractPaymentId(url: URL, body: unknown): string | null {
   const b = body as { type?: string; data?: { id?: string | number } } | null;
@@ -48,39 +48,7 @@ async function processNotification(request: Request): Promise<Response> {
     return new Response("ok", { status: 200 });
   }
 
-  const chargeId = payment.externalReference;
-
-  const { data: charge } = await supabase
-    .from("charges")
-    .select("id, kind, slots_count, team_id, status")
-    .eq("id", chargeId)
-    .maybeSingle();
-  if (!charge || charge.status !== "pending") {
-    return new Response("ok", { status: 200 });
-  }
-
-  // Guard atómico: solo UNA notificación (concurrente o duplicada) logra
-  // pasar de pending -> paid; select() aquí nos dice si esta fue la que ganó.
-  const { data: updated } = await supabase
-    .from("charges")
-    .update({
-      status: "paid",
-      paid_via: "mercadopago",
-      mp_payment_id: paymentId,
-      paid_at: new Date().toISOString(),
-    })
-    .eq("id", chargeId)
-    .eq("status", "pending")
-    .select("id")
-    .maybeSingle();
-
-  if (updated && charge.kind === "slots" && charge.slots_count) {
-    await supabase.rpc("increment_team_player_limit", {
-      p_team_id: charge.team_id,
-      p_amount: charge.slots_count,
-    });
-  }
-
+  await markChargePaid(payment.externalReference, "mercadopago", paymentId);
   return new Response("ok", { status: 200 });
 }
 

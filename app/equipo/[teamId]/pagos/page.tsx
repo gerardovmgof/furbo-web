@@ -1,6 +1,7 @@
 import { requireOwnedTeam } from "@/lib/auth";
 import { getTournament, listChargesByTeam } from "@/lib/queries";
 import { payChargeAction } from "@/lib/actions/payments";
+import { SKIP_MERCADOPAGO_FOR_TESTING } from "@/lib/paymentsTestMode";
 import BuySlotsForm from "./BuySlotsForm";
 
 export const dynamic = "force-dynamic";
@@ -43,10 +44,18 @@ export default async function PagosPage({
         </p>
       </div>
 
+      {SKIP_MERCADOPAGO_FOR_TESTING && (
+        <p className="rounded-lg border border-amber-900 bg-amber-950 px-3 py-2 text-sm text-amber-300">
+          🧪 Modo de prueba: los pagos se marcan como aprobados de inmediato, sin pasar por
+          Mercado Pago.
+        </p>
+      )}
+
       {resultado === "ok" && (
         <p className="rounded-lg border border-emerald-900 bg-emerald-950 px-3 py-2 text-sm text-emerald-300">
-          Pago en proceso. Si Mercado Pago ya lo confirmó, tu límite de jugadores se actualiza en
-          unos segundos.
+          {SKIP_MERCADOPAGO_FOR_TESTING
+            ? "Pago aprobado (modo de prueba). Tu límite de jugadores ya se actualizó."
+            : "Pago en proceso. Si Mercado Pago ya lo confirmó, tu límite de jugadores se actualiza en unos segundos."}
         </p>
       )}
       {resultado === "error" && (
