@@ -48,12 +48,16 @@ create table users (
   id            uuid primary key default gen_random_uuid(),
   username      citext not null unique,              -- case-insensitive
   password_hash text not null,                       -- bcryptjs cost 12
-  role          text not null check (role in ('admin','team')),
+  role          text not null check (role in ('admin','team','referee')),
   team_id       uuid references teams(id) on delete restrict,
   token_version integer not null default 1,          -- bump = invalida sesiones
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now(),
-  check ((role = 'admin' and team_id is null) or (role = 'team' and team_id is not null))
+  check (
+    (role = 'admin' and team_id is null) or
+    (role = 'team' and team_id is not null) or
+    (role = 'referee' and team_id is null)
+  )
 );
 create index idx_users_team on users(team_id);
 create trigger trg_users_updated before update on users

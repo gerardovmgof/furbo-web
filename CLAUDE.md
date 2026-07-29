@@ -15,8 +15,9 @@ Plataforma web para gestión de ligas de fútbol amateur. Cliente real: una orga
 
 > La idea original era dar "códigos" a los equipos. Se descartó. El modelo vigente es:
 
-- **admin** (la organizadora): da de alta torneos, equipos (con `player_limit` = registros pagados), **crea usuarios de equipo con contraseña** asignados a un equipo ya registrado, arma calendario, captura resultados y goles, genera la liguilla, resetea contraseñas.
-- **team** (delegado de equipo, creado por el admin, ligado a UN equipo): registra/edita/da de baja jugadores SOLO de su equipo hasta `player_limit`; ve sus partidos y estadísticas. No hay auto-registro público.
+- **admin** (la organizadora): da de alta torneos, equipos (con `player_limit` = registros pagados), **crea usuarios de equipo con contraseña** asignados a un equipo ya registrado, arma calendario (manual o sorteado), captura resultados y goles, genera la liguilla, resetea contraseñas, gestiona cobros.
+- **team** ("dueño de equipo" en la UI; el valor en DB sigue siendo `team`, creado por el admin, ligado a UN equipo): registra/edita/da de baja jugadores SOLO de su equipo hasta `player_limit`; ve sus partidos y estadísticas; compra cupos y paga cargos vía Mercado Pago. No hay auto-registro público.
+- **referee** (árbitro, creado por el admin, sin equipo): puede capturar resultado y goles de **cualquier partido pendiente** (`/arbitro`); NO puede corregir un partido ya jugado — eso es exclusivo del admin. Sección propia protegida por `proxy.ts` + `requireReferee()`/`requireAdminOrReferee()`.
 - **público**: ve tablas, goleo, calendario y liguilla sin login.
 - Datos de jugador MÍNIMOS: nombre + dorsal (decisión legal: minimización de datos, posibles menores de edad).
 
@@ -67,7 +68,14 @@ Reglas obligatorias para Claude en cada sesión:
 
 ## Núcleo de la app: completo (F0–F6)
 
-Torneos, equipos, delegados, calendario, resultados, tablas públicas y liguilla — todo en producción. Próximas ideas (permisos más finos, ajustes de navegación, lo que surja con uso real) se agregan aquí como nuevas fases cuando se definan.
+Torneos, equipos, delegados, calendario, resultados, tablas públicas y liguilla — todo en producción.
+
+## Fase nueva en curso (F7–F10)
+
+- [x] F7 — Sorteo automático del calendario: `lib/schedule.ts` (round-robin con barajado aleatorio, soporta impares con descanso e ida/vuelta), botón "Sortear calendario" en `/admin/calendario` (solo si el torneo no tiene partidos regulares aún).
+- [x] F8 — Rol árbitro: tercer rol `referee` (sin equipo). `/arbitro` lista partidos pendientes de cualquier fase; captura resultado y goles vía el mismo componente que usa el admin (`components/ScoreCaptureForm.tsx` + `lib/actions/captureResult.ts`, ambos compartidos). El árbitro NO puede corregir un partido ya jugado — esa acción exige `requireAdmin()` implícito vía el guard `actor.role === 'referee' && match.status === 'played'`. Alta de árbitros y de "dueños de equipo" desde `/admin/usuarios` (toggle en `CreateUserForm`).
+- [ ] F9 — Link de transmisión de Facebook por partido.
+- [ ] F10 — Pagos con Mercado Pago (compra de cupos de jugador + cargos de renta de cancha). **Deroga la regla histórica "sin pagos en la app"** — Gerardo aprobó explícitamente esta excepción; la app nunca guarda datos de tarjeta, todo lo procesa Mercado Pago (Checkout Pro) vía webhook idempotente.
 
 Marca la casilla correspondiente en este archivo al completar una fase (en el mismo commit).
 
@@ -81,4 +89,4 @@ Marca la casilla correspondiente en este archivo al completar una fase (en el mi
 ## Notas
 
 - `CLAUDE.local.md` (si existe) es contexto específico de cada máquina; está gitignoreado, no lo subas.
-- Si un requerimiento futuro apunta a pagos/datos bancarios dentro de la app, frénalo y coméntalo con Gerardo.
+- Pagos: Gerardo aprobó explícitamente el flujo de Mercado Pago descrito en F10 (ver arriba). Cualquier otro requerimiento de pagos/datos bancarios que se salga de ese alcance (guardar tarjetas directamente, otra pasarela, etc.), frénalo y coméntalo con Gerardo primero.

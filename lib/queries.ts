@@ -240,6 +240,16 @@ export async function listMatchesByTeam(teamId: string): Promise<MatchWithTeamNa
   }));
 }
 
+/** Árbitros (role='referee'). */
+export async function listReferees(): Promise<UserRow[]> {
+  const { data } = await supabase
+    .from("users")
+    .select("*")
+    .eq("role", "referee")
+    .order("created_at", { ascending: false });
+  return (data as UserRow[]) ?? [];
+}
+
 /** Delegados de equipo (role='team'), con el nombre de equipo y torneo embebidos. */
 export async function listTeamUsers(): Promise<
   (UserRow & { team_name: string; tournament_name: string })[]

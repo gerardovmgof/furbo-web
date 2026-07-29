@@ -1,7 +1,7 @@
 import { getMatch, teamNamesById, listActivePlayersByTeam, goalsByMatch } from "@/lib/queries";
 import ScoreCaptureForm from "@/components/ScoreCaptureForm";
 
-export default async function CapturaPage({
+export default async function ArbitroCapturaPage({
   params,
 }: {
   params: Promise<{ matchId: string }>;
@@ -17,14 +17,27 @@ export default async function CapturaPage({
     );
   }
 
+  if (match.status === "played") {
+    return (
+      <main className="mx-auto max-w-md space-y-3 py-8">
+        <p className="text-zinc-400">
+          Este partido ya se jugó — solo el admin puede corregir un resultado guardado.
+        </p>
+        <a href="/arbitro" className="inline-block text-sm text-emerald-400 underline">
+          ← Volver a pendientes
+        </a>
+      </main>
+    );
+  }
+
   if (!match.home_team_id || !match.away_team_id) {
     return (
       <main className="mx-auto max-w-md py-8">
         <p className="text-zinc-400">
           Este cruce aún no está definido — falta que se resuelva la ronda anterior.
         </p>
-        <a href="/admin/liguilla" className="mt-3 inline-block text-sm text-emerald-400 underline">
-          ← Volver a la liguilla
+        <a href="/arbitro" className="mt-3 inline-block text-sm text-emerald-400 underline">
+          ← Volver a pendientes
         </a>
       </main>
     );
@@ -71,11 +84,8 @@ export default async function CapturaPage({
         />
       </div>
 
-      <a
-        href={isPlayoff ? "/admin/liguilla" : "/admin/calendario"}
-        className="text-sm text-emerald-400 underline"
-      >
-        ← Volver
+      <a href="/arbitro" className="text-sm text-emerald-400 underline">
+        ← Volver a pendientes
       </a>
     </main>
   );

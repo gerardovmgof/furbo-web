@@ -91,7 +91,7 @@ export async function verifySession(token: string | undefined): Promise<SessionP
 
   if (
     typeof payload.uid !== "string" ||
-    (payload.role !== "admin" && payload.role !== "team") ||
+    (payload.role !== "admin" && payload.role !== "team" && payload.role !== "referee") ||
     typeof payload.tv !== "number" ||
     typeof payload.exp !== "number"
   ) {

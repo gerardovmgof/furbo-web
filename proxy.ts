@@ -11,7 +11,11 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const payload = await verifySession(request.cookies.get(SESSION_COOKIE)?.value);
 
-  const requiredRole = pathname.startsWith("/admin") ? "admin" : "team";
+  const requiredRole = pathname.startsWith("/admin")
+    ? "admin"
+    : pathname.startsWith("/arbitro")
+      ? "referee"
+      : "team";
 
   if (!payload || payload.role !== requiredRole) {
     const loginUrl = new URL("/login", request.url);
@@ -23,5 +27,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/equipo/:path*"],
+  matcher: ["/admin/:path*", "/equipo/:path*", "/arbitro/:path*"],
 };

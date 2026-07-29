@@ -23,7 +23,7 @@ import type { SessionPayload, UserRow } from "@/lib/types";
 const DUMMY_HASH = "$2b$12$wS9r6wQ5Yyd7aR1VzWWRIuPtp/G2Yfl26o819K1d.m3SbOl0RUUl2";
 
 export type LoginResult =
-  | { ok: true; role: "admin" | "team" }
+  | { ok: true; role: "admin" | "team" | "referee" }
   | { ok: false; error: string };
 
 export async function login(username: string, password: string): Promise<LoginResult> {
@@ -114,6 +114,24 @@ export async function requireTeamUser(): Promise<UserRow & { team_id: string }> 
   const user = await getSessionUser();
   if (!user || user.role !== "team" || !user.team_id) redirect("/login");
   return user as UserRow & { team_id: string };
+}
+
+/** Para Server Actions exclusivas de árbitros (sección /arbitro). */
+export async function requireReferee(): Promise<UserRow> {
+  const user = await getSessionUser();
+  if (!user || user.role !== "referee") redirect("/login");
+  return user;
+}
+
+/**
+ * Para acciones compartidas entre admin y árbitro (captura de resultados):
+ * ambos roles pueden capturar, pero la propia action debe restringir qué
+ * puede hacer cada uno (p. ej. corregir un partido ya jugado es solo admin).
+ */
+export async function requireAdminOrReferee(): Promise<UserRow> {
+  const user = await getSessionUser();
+  if (!user || (user.role !== "admin" && user.role !== "referee")) redirect("/login");
+  return user;
 }
 
 export async function hashPassword(password: string): Promise<string> {

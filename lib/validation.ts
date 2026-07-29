@@ -74,6 +74,15 @@ export const createTeamUserSchema = z.object({
   password: newPasswordSchema,
 });
 
+export const createRefereeSchema = z.object({
+  username: z
+    .string()
+    .trim()
+    .min(3, "El usuario debe tener al menos 3 caracteres.")
+    .max(40, "El usuario es demasiado largo."),
+  password: newPasswordSchema,
+});
+
 export const resetPasswordSchema = z.object({
   userId: z.string().uuid(),
   password: newPasswordSchema,

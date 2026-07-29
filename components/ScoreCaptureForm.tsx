@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { captureResultAction, type FormState } from "./actions";
+import { captureResultAction, type FormState } from "@/lib/actions/captureResult";
 import type { PlayerRow } from "@/lib/types";
 
 const initialState: FormState = { error: null };

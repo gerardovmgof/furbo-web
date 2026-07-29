@@ -27,7 +27,9 @@ export async function loginAction(
   }
 
   // El destino depende del rol; se ignora ?next para no redirigir a un panel ajeno.
-  redirect(result.role === "admin" ? "/admin" : "/equipo");
+  const destination =
+    result.role === "admin" ? "/admin" : result.role === "referee" ? "/arbitro" : "/equipo";
+  redirect(destination);
 }
 
 export async function logoutAction(): Promise<void> {

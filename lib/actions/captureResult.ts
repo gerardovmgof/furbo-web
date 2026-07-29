@@ -1,7 +1,12 @@
 "use server";
 
+// Captura de resultado + goles. Compartida entre /admin/captura y
+// /arbitro/captura: ambos roles pueden capturar, pero solo el admin puede
+// corregir un partido que ya se jugó (ver el guard justo después de leer
+// `match`).
+
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/auth";
+import { requireAdminOrReferee } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { scoreSchema, uuidSchema } from "@/lib/validation";
 import { getMatch, getTournament, listLegsForSlot } from "@/lib/queries";
@@ -12,7 +17,9 @@ export interface FormState {
   error: string | null;
 }
 
-function parsePenalties(formData: FormData): { homePenalties: number | null; awayPenalties: number | null } | { error: string } {
+function parsePenalties(
+  formData: FormData
+): { homePenalties: number | null; awayPenalties: number | null } | { error: string } {
   const homeRaw = formData.get("homePenalties");
   const awayRaw = formData.get("awayPenalties");
   if (!homeRaw && !awayRaw) return { homePenalties: null, awayPenalties: null };
@@ -32,7 +39,7 @@ export async function captureResultAction(
   _prev: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const admin = await requireAdmin();
+  const actor = await requireAdminOrReferee();
 
   const matchIdParsed = uuidSchema.safeParse(formData.get("matchId"));
   if (!matchIdParsed.success) return { error: "Partido inválido." };
@@ -40,6 +47,12 @@ export async function captureResultAction(
 
   const match = await getMatch(matchId);
   if (!match) return { error: "Partido no encontrado." };
+
+  // Un árbitro puede capturar cualquier partido pendiente, pero corregir un
+  // resultado ya guardado queda reservado al admin.
+  if (actor.role === "referee" && match.status === "played") {
+    return { error: "Este partido ya se jugó — solo el admin puede corregirlo." };
+  }
 
   const parsed = scoreSchema.safeParse({
     homeScore: formData.get("homeScore"),
@@ -62,7 +75,7 @@ export async function captureResultAction(
       away_score: parsed.data.awayScore,
       home_penalties: penalties.homePenalties,
       away_penalties: penalties.awayPenalties,
-      updated_by: admin.id,
+      updated_by: actor.id,
     })
     .eq("id", matchId);
   if (matchError) return { error: "No se pudo guardar el marcador." };
@@ -96,7 +109,9 @@ export async function captureResultAction(
   }
 
   revalidatePath(`/admin/captura/${matchId}`);
+  revalidatePath(`/arbitro/captura/${matchId}`);
   revalidatePath("/admin/calendario");
+  revalidatePath("/arbitro");
   revalidatePath("/calendario");
 
   let propagationError: string | null = null;

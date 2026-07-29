@@ -3,7 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin, hashPassword } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { createTeamUserSchema, resetPasswordSchema, editTeamUserSchema } from "@/lib/validation";
+import {
+  createTeamUserSchema,
+  createRefereeSchema,
+  resetPasswordSchema,
+  editTeamUserSchema,
+} from "@/lib/validation";
 
 export interface FormState {
   error: string | null;
@@ -66,6 +71,37 @@ export async function createTeamUserAction(
   if (error) {
     const message =
       error.code === "23505" ? "Ese nombre de usuario ya existe." : "No se pudo crear el usuario.";
+    return { error: message };
+  }
+
+  revalidatePath("/admin/usuarios");
+  return { error: null };
+}
+
+export async function createRefereeAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  await requireAdmin();
+
+  const parsed = createRefereeSchema.safeParse({
+    username: formData.get("username"),
+    password: formData.get("password"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Datos inválidos." };
+  }
+
+  const password_hash = await hashPassword(parsed.data.password);
+  const { error } = await supabase.from("users").insert({
+    username: parsed.data.username.trim().toLowerCase(),
+    password_hash,
+    role: "referee",
+    team_id: null,
+  });
+  if (error) {
+    const message =
+      error.code === "23505" ? "Ese nombre de usuario ya existe." : "No se pudo crear el árbitro.";
     return { error: message };
   }
 

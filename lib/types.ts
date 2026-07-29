@@ -3,7 +3,7 @@
 
 export type TournamentStatus = "draft" | "regular" | "playoffs" | "finished";
 export type TeamStatus = "active" | "withdrawn";
-export type UserRole = "admin" | "team";
+export type UserRole = "admin" | "team" | "referee";
 export type MatchPhase = "regular" | "playoff";
 export type MatchStatus = "scheduled" | "played" | "postponed" | "canceled";
 
