@@ -91,6 +91,10 @@ export const editTeamUserSchema = z.object({
 
 export const uuidSchema = z.string().uuid();
 
+export const generateScheduleSchema = z.object({
+  doubleRound: z.boolean(),
+});
+
 export const matchSchema = z
   .object({
     round: z.coerce

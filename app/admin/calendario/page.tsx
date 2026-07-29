@@ -2,6 +2,7 @@ import { listTournaments, listTeamsByTournament, listMatchesByTournament } from 
 import { setMatchStatusAction, deleteMatchAction } from "./actions";
 import CreateMatchForm from "./CreateMatchForm";
 import EditMatchForm from "./EditMatchForm";
+import GenerateScheduleForm from "./GenerateScheduleForm";
 import TournamentSelect from "@/components/TournamentSelect";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -67,6 +68,15 @@ export default async function CalendarioAdminPage({
           />
         </div>
       </div>
+
+      {rounds.length === 0 && (
+        <div className="rounded-xl border border-emerald-900 bg-emerald-950/30 p-4">
+          <GenerateScheduleForm
+            tournamentId={selected.id}
+            activeTeamsCount={activeTeams.length}
+          />
+        </div>
+      )}
 
       <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
         <CreateMatchForm tournamentId={selected.id} teams={activeTeams} />
