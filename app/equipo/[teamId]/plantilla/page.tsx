@@ -3,6 +3,8 @@ import { getTournament, listActivePlayersByTeam } from "@/lib/queries";
 import { deactivatePlayerAction } from "./actions";
 import AddPlayerForm from "./AddPlayerForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function PlantillaPage({
   params,
 }: {

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { addPlayerAction, type FormState } from "./actions";
 
 const initialState: FormState = { error: null };
@@ -21,6 +22,22 @@ export default function AddPlayerForm({
     addPlayerAction.bind(null, teamId),
     initialState
   );
+  const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
+  const wasPending = useRef(false);
+
+  useEffect(() => {
+    // revalidatePath() invalida la caché en el servidor, pero eso no
+    // siempre alcanza para que ESTA pestaña ya abierta muestre al jugador
+    // recién agregado — sin este empujón, el dueño se queda viendo la
+    // plantilla vieja hasta que navega a otra pestaña y regresa. Se detecta
+    // "acaba de terminar un submit exitoso" comparando el pending anterior.
+    if (wasPending.current && !pending && !state.error) {
+      formRef.current?.reset();
+      router.refresh();
+    }
+    wasPending.current = pending;
+  }, [pending, state, router]);
 
   if (disabled) {
     return (
@@ -39,7 +56,7 @@ export default function AddPlayerForm({
   }
 
   return (
-    <form action={formAction} className="flex flex-wrap items-end gap-2">
+    <form ref={formRef} action={formAction} className="flex flex-wrap items-end gap-2">
       <div>
         <label className="block text-sm font-medium text-zinc-300" htmlFor="name">
           Nombre del jugador
