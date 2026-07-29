@@ -1,4 +1,9 @@
-import { listTournaments, listTeamsByTournament, listChargesByTournament } from "@/lib/queries";
+import {
+  listTournaments,
+  listTeamsByTournament,
+  listChargesByTournament,
+  teamOwnerUsernames,
+} from "@/lib/queries";
 import { markChargePaidManuallyAction, cancelChargeAction } from "./actions";
 import SetSlotPriceForm from "./SetSlotPriceForm";
 import CreateChargeForm from "./CreateChargeForm";
@@ -43,6 +48,7 @@ export default async function CobrosPage({
     listChargesByTournament(selected.id),
   ]);
   const activeTeams = teams.filter((team) => team.status === "active");
+  const ownerUsernames = await teamOwnerUsernames(activeTeams.map((team) => team.id));
 
   return (
     <main className="mx-auto max-w-3xl space-y-8 py-8">
@@ -67,7 +73,11 @@ export default async function CobrosPage({
 
       <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
         <p className="mb-3 font-semibold text-zinc-100">Crear cargo manual (renta de cancha, etc.)</p>
-        <CreateChargeForm tournamentId={selected.id} teams={activeTeams} />
+        <CreateChargeForm
+          tournamentId={selected.id}
+          teams={activeTeams}
+          ownerUsernames={ownerUsernames}
+        />
       </div>
 
       <div className="space-y-3">

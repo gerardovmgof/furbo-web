@@ -141,16 +141,11 @@ export const buySlotsSchema = z.object({
 });
 
 // El link de transmisión se valida a mano (no con un schema zod plano)
-// porque necesita distinguir "vacío = quitar el link" de "URL inválida",
-// además de revisar el dominio contra una whitelist — mismo espíritu que
-// parsePenalties() en lib/actions/captureResult.ts.
-const STREAM_URL_HOSTS = new Set([
-  "facebook.com",
-  "www.facebook.com",
-  "m.facebook.com",
-  "fb.watch",
-]);
-
+// porque necesita distinguir "vacío = quitar el link" de "URL inválida" —
+// mismo espíritu que parsePenalties() en lib/actions/captureResult.ts.
+// Se permite cualquier plataforma (Facebook, YouTube, Instagram, TikTok,
+// Twitch...), solo se exige que sea una URL http/https real — eso basta
+// para que sea segura de renderizar como link público.
 export function parseStreamUrl(
   raw: FormDataEntryValue | null
 ): { value: string | null } | { error: string } {
@@ -162,12 +157,10 @@ export function parseStreamUrl(
   try {
     url = new URL(trimmed);
   } catch {
-    return { error: "El link de transmisión no es una URL válida." };
+    return { error: "El link de transmisión no es una URL válida (debe empezar con https://)." };
   }
-  if (url.protocol !== "https:" || !STREAM_URL_HOSTS.has(url.hostname)) {
-    return {
-      error: "El link de transmisión debe ser de Facebook (facebook.com o fb.watch).",
-    };
+  if (url.protocol !== "https:" && url.protocol !== "http:") {
+    return { error: "El link de transmisión debe empezar con http:// o https://." };
   }
   return { value: trimmed };
 }

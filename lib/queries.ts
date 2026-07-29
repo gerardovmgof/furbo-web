@@ -250,6 +250,21 @@ export async function listReferees(): Promise<UserRow[]> {
   return (data as UserRow[]) ?? [];
 }
 
+/** Username del dueño (delegado) de cada equipo, para mostrar "Equipo - Usuario". */
+export async function teamOwnerUsernames(teamIds: string[]): Promise<Record<string, string>> {
+  if (teamIds.length === 0) return {};
+  const { data } = await supabase
+    .from("users")
+    .select("team_id, username")
+    .eq("role", "team")
+    .in("team_id", teamIds);
+  const usernames: Record<string, string> = {};
+  for (const u of (data as { team_id: string; username: string }[]) ?? []) {
+    usernames[u.team_id] = u.username;
+  }
+  return usernames;
+}
+
 export type ChargeWithTeamName = ChargeRow & { team_name: string };
 
 export async function listChargesByTournament(

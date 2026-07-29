@@ -41,6 +41,7 @@ export default function SetSlotPriceForm({
         {pending ? "Guardando…" : "Guardar precio"}
       </button>
       {state.error && <p className="w-full text-sm text-red-400">{state.error}</p>}
+      {state.ok && <p className="w-full text-sm text-emerald-400">✅ Precio guardado.</p>}
     </form>
   );
 }

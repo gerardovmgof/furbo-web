@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect, useRef } from "react";
 import { createTeamUserAction, createRefereeAction, type FormState } from "./actions";
 import type { TeamRow } from "@/lib/types";
 
@@ -20,6 +20,25 @@ export default function CreateUserForm({
     createRefereeAction,
     initialState
   );
+
+  const teamFormRef = useRef<HTMLFormElement>(null);
+  const refereeFormRef = useRef<HTMLFormElement>(null);
+  const prevTeamState = useRef(teamState);
+  const prevRefereeState = useRef(refereeState);
+
+  // Al crear con éxito, limpia los campos para la siguiente alta — es la
+  // única señal visible de que sí se creó (el nuevo usuario aparece en la
+  // lista de abajo, pero eso no siempre es visible sin hacer scroll).
+  useEffect(() => {
+    if (teamState !== prevTeamState.current && teamState.ok) teamFormRef.current?.reset();
+    prevTeamState.current = teamState;
+  }, [teamState]);
+  useEffect(() => {
+    if (refereeState !== prevRefereeState.current && refereeState.ok) {
+      refereeFormRef.current?.reset();
+    }
+    prevRefereeState.current = refereeState;
+  }, [refereeState]);
 
   return (
     <div className="space-y-3">
@@ -50,7 +69,7 @@ export default function CreateUserForm({
             antes de crear un dueño de equipo.
           </p>
         ) : (
-          <form action={teamFormAction} className="flex flex-wrap items-end gap-2">
+          <form ref={teamFormRef} action={teamFormAction} className="flex flex-wrap items-end gap-2">
             <div>
               <label className="block text-sm font-medium text-zinc-300" htmlFor="teamId">
                 Equipo
@@ -102,11 +121,14 @@ export default function CreateUserForm({
               {teamPending ? "Creando…" : "Crear dueño de equipo"}
             </button>
             {teamState.error && <p className="w-full text-sm text-red-400">{teamState.error}</p>}
+            {teamState.ok && (
+              <p className="w-full text-sm text-emerald-400">✅ Dueño de equipo creado.</p>
+            )}
           </form>
         ))}
 
       {kind === "referee" && (
-        <form action={refereeFormAction} className="flex flex-wrap items-end gap-2">
+        <form ref={refereeFormRef} action={refereeFormAction} className="flex flex-wrap items-end gap-2">
           <div>
             <label className="block text-sm font-medium text-zinc-300" htmlFor="ref-username">
               Usuario
@@ -142,6 +164,9 @@ export default function CreateUserForm({
           </button>
           {refereeState.error && (
             <p className="w-full text-sm text-red-400">{refereeState.error}</p>
+          )}
+          {refereeState.ok && (
+            <p className="w-full text-sm text-emerald-400">✅ Árbitro creado.</p>
           )}
         </form>
       )}

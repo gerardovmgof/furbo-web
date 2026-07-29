@@ -12,6 +12,7 @@ import {
 
 export interface FormState {
   error: string | null;
+  ok?: boolean;
 }
 
 export async function editTeamUserAction(
@@ -43,7 +44,7 @@ export async function editTeamUserAction(
   }
 
   revalidatePath("/admin/usuarios");
-  return { error: null };
+  return { error: null, ok: true };
 }
 
 export async function createTeamUserAction(
@@ -75,7 +76,7 @@ export async function createTeamUserAction(
   }
 
   revalidatePath("/admin/usuarios");
-  return { error: null };
+  return { error: null, ok: true };
 }
 
 export async function createRefereeAction(
@@ -106,7 +107,7 @@ export async function createRefereeAction(
   }
 
   revalidatePath("/admin/usuarios");
-  return { error: null };
+  return { error: null, ok: true };
 }
 
 export async function resetTeamUserPasswordAction(
@@ -133,5 +134,5 @@ export async function resetTeamUserPasswordAction(
   if (error) return { error: "No se pudo restablecer la contraseña." };
 
   revalidatePath("/admin/usuarios");
-  return { error: null };
+  return { error: null, ok: true };
 }

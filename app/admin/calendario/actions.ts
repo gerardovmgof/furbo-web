@@ -8,6 +8,7 @@ import { generateRoundRobin } from "@/lib/schedule";
 
 export interface FormState {
   error: string | null;
+  ok?: boolean;
 }
 
 export async function generateScheduleAction(
@@ -151,7 +152,7 @@ export async function editMatchAction(
 
   revalidatePath("/admin/calendario");
   revalidatePath("/calendario");
-  return { error: null };
+  return { error: null, ok: true };
 }
 
 export async function setMatchStatusAction(

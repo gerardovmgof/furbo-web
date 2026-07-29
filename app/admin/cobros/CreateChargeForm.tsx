@@ -9,9 +9,11 @@ const initialState: FormState = { error: null };
 export default function CreateChargeForm({
   tournamentId,
   teams,
+  ownerUsernames,
 }: {
   tournamentId: string;
   teams: TeamRow[];
+  ownerUsernames: Record<string, string>;
 }) {
   const [state, formAction, pending] = useActionState(createChargeAction, initialState);
 
@@ -34,7 +36,7 @@ export default function CreateChargeForm({
         >
           {teams.map((t) => (
             <option key={t.id} value={t.id}>
-              {t.name}
+              {t.name} - {ownerUsernames[t.id] ?? "sin usuario"}
             </option>
           ))}
         </select>

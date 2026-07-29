@@ -7,6 +7,7 @@ import { setSlotPriceSchema, createChargeSchema, uuidSchema, toCents } from "@/l
 
 export interface FormState {
   error: string | null;
+  ok?: boolean;
 }
 
 export async function setSlotPriceAction(
@@ -34,7 +35,7 @@ export async function setSlotPriceAction(
   if (error) return { error: "No se pudo actualizar el precio del cupo." };
 
   revalidatePath("/admin/cobros");
-  return { error: null };
+  return { error: null, ok: true };
 }
 
 export async function createChargeAction(

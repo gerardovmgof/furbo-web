@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect, useRef } from "react";
 import { editMatchAction, type FormState } from "./actions";
 import type { TeamRow } from "@/lib/types";
 
@@ -34,6 +34,16 @@ export default function EditMatchForm({
 }) {
   const [open, setOpen] = useState(false);
   const [state, formAction, pending] = useActionState(editMatchAction, initialState);
+
+  // Al guardar con éxito se cierra el formulario y se ve el partido
+  // actualizado en la fila de abajo — esa es la confirmación visual.
+  // Se compara la referencia del objeto (no solo state.ok) para que también
+  // dispare en guardados sucesivos exitosos, no solo el primero.
+  const prevStateRef = useRef(state);
+  useEffect(() => {
+    if (state !== prevStateRef.current && state.ok) setOpen(false);
+    prevStateRef.current = state;
+  }, [state]);
 
   if (!open) {
     return (
@@ -111,11 +121,11 @@ export default function EditMatchForm({
         />
       </div>
       <div>
-        <label className="block text-xs text-zinc-400">Link de transmisión (Facebook)</label>
+        <label className="block text-xs text-zinc-400">Link de transmisión (opcional)</label>
         <input
           name="streamUrl"
           type="url"
-          placeholder="https://facebook.com/..."
+          placeholder="https://..."
           defaultValue={streamUrl ?? ""}
           className="mt-1 w-56 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
         />

@@ -115,6 +115,16 @@ export default async function CalendarioAdminPage({
                         {m.is_forfeit && " · default"} · {formatKickoff(m.kickoff_at)}
                         {m.venue && ` · ${m.venue}`}
                       </p>
+                      {m.stream_url && (
+                        <a
+                          href={m.stream_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-emerald-400 hover:underline"
+                        >
+                          🔴 Link de transmisión
+                        </a>
+                      )}
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <a

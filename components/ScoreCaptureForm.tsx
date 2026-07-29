@@ -128,13 +128,13 @@ export default function ScoreCaptureForm({
 
       <div>
         <label className="block text-sm text-zinc-400" htmlFor="streamUrl">
-          Link de transmisión (Facebook, opcional)
+          Link de transmisión (opcional)
         </label>
         <input
           id="streamUrl"
           name="streamUrl"
           type="url"
-          placeholder="https://facebook.com/..."
+          placeholder="https://..."
           defaultValue={initialStreamUrl ?? ""}
           className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-500"
         />
