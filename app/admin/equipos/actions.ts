@@ -9,6 +9,15 @@ export interface FormState {
   error: string | null;
 }
 
+/** "" (opción "Sin dueño") -> null; si viene algo, debe ser un uuid válido. */
+function parseOwnerUserId(raw: FormDataEntryValue | null): { value: string | null } | { error: string } {
+  const trimmed = typeof raw === "string" ? raw.trim() : "";
+  if (!trimmed) return { value: null };
+  const parsed = uuidSchema.safeParse(trimmed);
+  if (!parsed.success) return { error: "Dueño inválido." };
+  return { value: parsed.data };
+}
+
 export async function createTeamAction(
   _prev: FormState,
   formData: FormData
@@ -20,13 +29,16 @@ export async function createTeamAction(
     name: formData.get("name"),
     playerLimit: formData.get("playerLimit"),
   });
+  const ownerUserId = parseOwnerUserId(formData.get("ownerUserId"));
   if (!tournamentIdParsed.success) return { error: "Torneo inválido." };
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Datos inválidos." };
   }
+  if ("error" in ownerUserId) return { error: ownerUserId.error };
 
   const { error } = await supabase.from("teams").insert({
     tournament_id: tournamentIdParsed.data,
+    owner_user_id: ownerUserId.value,
     name: parsed.data.name,
     player_limit: parsed.data.playerLimit,
     status: "active",
@@ -51,10 +63,12 @@ export async function editTeamAction(
     name: formData.get("name"),
     playerLimit: formData.get("playerLimit"),
   });
+  const ownerUserId = parseOwnerUserId(formData.get("ownerUserId"));
   if (!idParsed.success) return { error: "Equipo inválido." };
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Datos inválidos." };
   }
+  if ("error" in ownerUserId) return { error: ownerUserId.error };
 
   const { count } = await supabase
     .from("players")
@@ -69,7 +83,11 @@ export async function editTeamAction(
 
   const { error } = await supabase
     .from("teams")
-    .update({ name: parsed.data.name, player_limit: parsed.data.playerLimit })
+    .update({
+      name: parsed.data.name,
+      player_limit: parsed.data.playerLimit,
+      owner_user_id: ownerUserId.value,
+    })
     .eq("id", idParsed.data);
   if (error) {
     const message =

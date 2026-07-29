@@ -2,20 +2,15 @@
 
 import { useActionState } from "react";
 import { editTeamUserAction, type FormState } from "./actions";
-import type { TeamRow } from "@/lib/types";
 
 const initialState: FormState = { error: null };
 
 export default function EditTeamUserForm({
   userId,
   currentUsername,
-  currentTeamId,
-  teams,
 }: {
   userId: string;
   currentUsername: string;
-  currentTeamId: string;
-  teams: (TeamRow & { tournament_name: string })[];
 }) {
   const [state, formAction, pending] = useActionState(editTeamUserAction, initialState);
 
@@ -34,18 +29,6 @@ export default function EditTeamUserForm({
           required
           className="w-36 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
         />
-        <select
-          name="teamId"
-          defaultValue={currentTeamId}
-          required
-          className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
-        >
-          {teams.map((team) => (
-            <option key={team.id} value={team.id}>
-              {team.name} ({team.tournament_name})
-            </option>
-          ))}
-        </select>
         <button
           type="submit"
           disabled={pending}

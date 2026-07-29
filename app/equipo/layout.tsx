@@ -1,12 +1,11 @@
-import { requireTeamUser } from "@/lib/auth";
+import { requireTeamOwner } from "@/lib/auth";
 import { logoutAction } from "@/app/login/actions";
-import EquipoTabs from "@/components/EquipoTabs";
 
 export default async function TeamLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   // Segunda capa: revalida contra DB aunque el proxy ya haya dejado pasar.
-  await requireTeamUser();
+  await requireTeamOwner();
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-zinc-950 text-zinc-100">
@@ -21,7 +20,6 @@ export default async function TeamLayout({
           </button>
         </form>
       </header>
-      <EquipoTabs />
       <div className="flex-1 p-4">{children}</div>
     </div>
   );

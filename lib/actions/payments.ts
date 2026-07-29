@@ -1,11 +1,12 @@
 "use server";
 
 // Acciones de pago del lado del dueño de equipo: comprar cupos y pagar
-// cargos pendientes. En ambos casos el team_id sale SIEMPRE de la sesión
-// (requireTeamUser), nunca de un input del formulario.
+// cargos pendientes. En ambos casos el teamId llega por parámetro (un dueño
+// puede tener varios equipos) pero SIEMPRE se valida contra
+// teams.owner_user_id vía requireOwnedTeam antes de usarse.
 
 import { redirect } from "next/navigation";
-import { requireTeamUser } from "@/lib/auth";
+import { requireOwnedTeam } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { getTournament } from "@/lib/queries";
 import { buySlotsSchema, uuidSchema } from "@/lib/validation";
@@ -16,23 +17,18 @@ export interface FormState {
 }
 
 export async function buySlotsAction(
+  teamId: string,
   _prev: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const user = await requireTeamUser();
+  const { user, team } = await requireOwnedTeam(teamId);
+  if (team.status !== "active") {
+    return { error: "Tu equipo no está activo." };
+  }
 
   const parsed = buySlotsSchema.safeParse({ slotsCount: formData.get("slotsCount") });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Datos inválidos." };
-  }
-
-  const { data: team } = await supabase
-    .from("teams")
-    .select("id, tournament_id, status")
-    .eq("id", user.team_id)
-    .maybeSingle();
-  if (!team || team.status !== "active") {
-    return { error: "Tu equipo no está activo." };
   }
 
   const tournament = await getTournament(team.tournament_id);
@@ -63,6 +59,7 @@ export async function buySlotsAction(
   try {
     const preference = await createChargePreference({
       chargeId: charge.id,
+      teamId: team.id,
       title: concept,
       amountCents,
     });
@@ -80,24 +77,25 @@ export async function buySlotsAction(
   redirect(initPoint);
 }
 
-export async function payChargeAction(chargeId: string): Promise<void> {
-  const user = await requireTeamUser();
+export async function payChargeAction(teamId: string, chargeId: string): Promise<void> {
+  const { team } = await requireOwnedTeam(teamId);
   const idParsed = uuidSchema.safeParse(chargeId);
-  if (!idParsed.success) redirect("/equipo/pagos?resultado=error");
+  if (!idParsed.success) redirect(`/equipo/${teamId}/pagos?resultado=error`);
 
   const { data: charge } = await supabase
     .from("charges")
     .select("id, concept, amount_cents")
     .eq("id", idParsed.data)
-    .eq("team_id", user.team_id) // el dueño de equipo SOLO paga cargos de SU equipo
+    .eq("team_id", team.id) // el dueño de equipo SOLO paga cargos de SU equipo
     .eq("status", "pending")
     .maybeSingle();
-  if (!charge) redirect("/equipo/pagos?resultado=error");
+  if (!charge) redirect(`/equipo/${teamId}/pagos?resultado=error`);
 
   let initPoint: string;
   try {
     const preference = await createChargePreference({
       chargeId: charge.id,
+      teamId,
       title: charge.concept,
       amountCents: charge.amount_cents,
     });
@@ -107,7 +105,7 @@ export async function payChargeAction(chargeId: string): Promise<void> {
       .update({ mp_preference_id: preference.preferenceId })
       .eq("id", charge.id);
   } catch {
-    redirect("/equipo/pagos?resultado=error");
+    redirect(`/equipo/${teamId}/pagos?resultado=error`);
   }
 
   redirect(initPoint);

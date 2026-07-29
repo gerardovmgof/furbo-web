@@ -1,18 +1,15 @@
-import { requireTeamUser } from "@/lib/auth";
-import { getTeam, getTournament, listActivePlayersByTeam } from "@/lib/queries";
+import { requireOwnedTeam } from "@/lib/auth";
+import { getTournament, listActivePlayersByTeam } from "@/lib/queries";
 import { deactivatePlayerAction } from "./actions";
 import AddPlayerForm from "./AddPlayerForm";
 
-export default async function PlantillaPage() {
-  const user = await requireTeamUser();
-  const team = await getTeam(user.team_id);
-  if (!team) {
-    return (
-      <main className="mx-auto max-w-2xl py-8">
-        <p className="text-zinc-400">No se encontró tu equipo.</p>
-      </main>
-    );
-  }
+export default async function PlantillaPage({
+  params,
+}: {
+  params: Promise<{ teamId: string }>;
+}) {
+  const { teamId } = await params;
+  const { team } = await requireOwnedTeam(teamId);
 
   const [tournament, players] = await Promise.all([
     getTournament(team.tournament_id),
@@ -23,9 +20,9 @@ export default async function PlantillaPage() {
   const closed = !tournament?.registration_open || team.status !== "active";
 
   return (
-    <main className="mx-auto max-w-2xl space-y-8 py-8">
+    <main className="mx-auto max-w-2xl space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Plantilla — {team.name}</h1>
+        <h2 className="text-2xl font-bold">Plantilla — {team.name}</h2>
         <p className="mt-1 text-sm text-zinc-400">
           {players.length}/{team.player_limit} jugadores registrados
           {team.status !== "active" && " · equipo retirado"}
@@ -34,7 +31,7 @@ export default async function PlantillaPage() {
       </div>
 
       <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-        <AddPlayerForm disabled={full || closed} />
+        <AddPlayerForm teamId={team.id} disabled={full || closed} />
       </div>
 
       <div className="space-y-2">
@@ -52,7 +49,7 @@ export default async function PlantillaPage() {
               </span>
               {p.name}
             </p>
-            <form action={deactivatePlayerAction.bind(null, p.id)}>
+            <form action={deactivatePlayerAction.bind(null, team.id, p.id)}>
               <button
                 type="submit"
                 className="rounded-lg border border-red-900 px-3 py-1 text-sm text-red-300 hover:bg-red-950"

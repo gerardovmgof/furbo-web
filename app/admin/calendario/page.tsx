@@ -3,6 +3,7 @@ import { setMatchStatusAction, deleteMatchAction } from "./actions";
 import CreateMatchForm from "./CreateMatchForm";
 import EditMatchForm from "./EditMatchForm";
 import GenerateScheduleForm from "./GenerateScheduleForm";
+import ExtendScheduleForm from "./ExtendScheduleForm";
 import TournamentSelect from "@/components/TournamentSelect";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -55,6 +56,11 @@ export default async function CalendarioAdminPage({
 
   const rounds = [...new Set(matches.map((m) => m.round))].sort((a, b) => a - b);
 
+  const teamsWithMatches = new Set(
+    matches.flatMap((m) => [m.home_team_id, m.away_team_id]).filter((id): id is string => Boolean(id))
+  );
+  const newTeams = activeTeams.filter((team) => !teamsWithMatches.has(team.id));
+
   return (
     <main className="mx-auto max-w-4xl space-y-8 py-8">
       <div>
@@ -74,6 +80,15 @@ export default async function CalendarioAdminPage({
           <GenerateScheduleForm
             tournamentId={selected.id}
             activeTeamsCount={activeTeams.length}
+          />
+        </div>
+      )}
+
+      {rounds.length > 0 && newTeams.length > 0 && (
+        <div className="rounded-xl border border-emerald-900 bg-emerald-950/30 p-4">
+          <ExtendScheduleForm
+            tournamentId={selected.id}
+            newTeamNames={newTeams.map((team) => team.name)}
           />
         </div>
       )}

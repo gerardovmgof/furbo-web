@@ -1,21 +1,23 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireTeamUser } from "@/lib/auth";
+import { requireOwnedTeam } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { playerSchema, uuidSchema } from "@/lib/validation";
-import { getTeam, getTournament } from "@/lib/queries";
+import { getTournament } from "@/lib/queries";
 
 export interface FormState {
   error: string | null;
 }
 
 export async function addPlayerAction(
+  teamId: string,
   _prev: FormState,
   formData: FormData
 ): Promise<FormState> {
-  // team_id SIEMPRE sale de la sesión validada en DB, nunca del formulario.
-  const user = await requireTeamUser();
+  // El teamId siempre se valida contra teams.owner_user_id aquí, nunca se
+  // confía en el que llega del formulario sin pasar por requireOwnedTeam.
+  const { user, team } = await requireOwnedTeam(teamId);
 
   const parsed = playerSchema.safeParse({
     name: formData.get("name"),
@@ -25,8 +27,7 @@ export async function addPlayerAction(
     return { error: parsed.error.issues[0]?.message ?? "Datos inválidos." };
   }
 
-  const team = await getTeam(user.team_id);
-  if (!team || team.status !== "active") {
+  if (team.status !== "active") {
     return { error: "Tu equipo no está activo en este momento." };
   }
   const tournament = await getTournament(team.tournament_id);
@@ -37,7 +38,7 @@ export async function addPlayerAction(
   // RPC atómica: el chequeo del límite corre dentro de una transacción con
   // FOR UPDATE — dos altas simultáneas no pueden rebasar player_limit.
   const { error } = await supabase.rpc("create_player_atomic", {
-    p_team_id: user.team_id,
+    p_team_id: team.id,
     p_name: parsed.data.name,
     p_jersey: parsed.data.jerseyNumber,
     p_created_by: user.id,
@@ -56,21 +57,17 @@ export async function addPlayerAction(
     return { error: "No se pudo registrar al jugador." };
   }
 
-  revalidatePath("/equipo/plantilla");
+  revalidatePath(`/equipo/${teamId}/plantilla`);
   return { error: null };
 }
 
-export async function deactivatePlayerAction(playerId: string): Promise<void> {
-  const user = await requireTeamUser();
+export async function deactivatePlayerAction(teamId: string, playerId: string): Promise<void> {
+  const { team } = await requireOwnedTeam(teamId);
   const id = uuidSchema.parse(playerId);
 
   // Ownership check en el WHERE: solo se puede dar de baja un jugador del
   // propio equipo, sin importar qué id llegue del formulario.
-  await supabase
-    .from("players")
-    .update({ active: false })
-    .eq("id", id)
-    .eq("team_id", user.team_id);
+  await supabase.from("players").update({ active: false }).eq("id", id).eq("team_id", team.id);
 
-  revalidatePath("/equipo/plantilla");
+  revalidatePath(`/equipo/${teamId}/plantilla`);
 }

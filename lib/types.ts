@@ -25,6 +25,7 @@ export interface TournamentRow {
 export interface TeamRow {
   id: string;
   tournament_id: string;
+  owner_user_id: string | null;
   name: string;
   player_limit: number;
   status: TeamStatus;
@@ -37,7 +38,6 @@ export interface UserRow {
   username: string;
   password_hash: string;
   role: UserRole;
-  team_id: string | null;
   token_version: number;
   created_at: string;
   updated_at: string;
@@ -121,11 +121,13 @@ export interface StandingRow {
   pts: number;
 }
 
-// Payload de la cookie de sesión firmada (ver lib/session.ts)
+// Payload de la cookie de sesión firmada (ver lib/session.ts). No incluye
+// team_id: un dueño puede tener varios equipos, así que el equipo activo
+// siempre se valida por request contra teams.owner_user_id (ver
+// requireOwnedTeam en lib/auth.ts), nunca desde la cookie.
 export interface SessionPayload {
   uid: string;
   role: UserRole;
-  teamId: string | null;
   tv: number; // token_version al momento del login
   exp: number; // epoch segundos
 }

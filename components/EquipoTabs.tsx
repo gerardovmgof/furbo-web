@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const TABS = [
-  { href: "/equipo/plantilla", label: "Plantilla" },
-  { href: "/equipo/pagos", label: "Pagos" },
-];
-
-export default function EquipoTabs() {
+export default function EquipoTabs({ teamId }: { teamId: string }) {
   const pathname = usePathname();
+  const TABS = [
+    { href: `/equipo/${teamId}/plantilla`, label: "Plantilla" },
+    { href: `/equipo/${teamId}/pagos`, label: "Pagos" },
+  ];
 
   return (
     <nav className="flex gap-1 overflow-x-auto border-b border-zinc-800 px-4 py-2">

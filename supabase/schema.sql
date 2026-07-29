@@ -28,10 +28,28 @@ create table tournaments (
 create trigger trg_tournaments_updated before update on tournaments
   for each row execute function set_updated_at();
 
+-- ---------- USUARIOS (auth propia) ----------
+-- Se crea ANTES que teams porque teams.owner_user_id la referencia.
+create table users (
+  id            uuid primary key default gen_random_uuid(),
+  username      citext not null unique,              -- case-insensitive
+  password_hash text not null,                       -- bcryptjs cost 12
+  role          text not null check (role in ('admin','team','referee')),
+  token_version integer not null default 1,          -- bump = invalida sesiones
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+create trigger trg_users_updated before update on users
+  for each row execute function set_updated_at();
+
 -- ---------- EQUIPOS ----------
+-- owner_user_id: el dueño de equipo (role='team') que lo autorregistró, o
+-- null si lo dio de alta el admin sin ligarlo todavía. Un dueño puede tener
+-- VARIOS equipos (uno-a-muchos: no hace falta tabla puente).
 create table teams (
   id            uuid primary key default gen_random_uuid(),
   tournament_id uuid not null references tournaments(id) on delete restrict,
+  owner_user_id uuid references users(id) on delete set null,
   name          text not null,
   player_limit  smallint not null default 0 check (player_limit >= 0), -- registros pagados
   status        text not null default 'active'
@@ -41,27 +59,8 @@ create table teams (
   unique (tournament_id, name)
 );
 create index idx_teams_tournament on teams(tournament_id);
+create index idx_teams_owner on teams(owner_user_id);
 create trigger trg_teams_updated before update on teams
-  for each row execute function set_updated_at();
-
--- ---------- USUARIOS (auth propia) ----------
-create table users (
-  id            uuid primary key default gen_random_uuid(),
-  username      citext not null unique,              -- case-insensitive
-  password_hash text not null,                       -- bcryptjs cost 12
-  role          text not null check (role in ('admin','team','referee')),
-  team_id       uuid references teams(id) on delete restrict,
-  token_version integer not null default 1,          -- bump = invalida sesiones
-  created_at    timestamptz not null default now(),
-  updated_at    timestamptz not null default now(),
-  check (
-    (role = 'admin' and team_id is null) or
-    (role = 'team' and team_id is not null) or
-    (role = 'referee' and team_id is null)
-  )
-);
-create index idx_users_team on users(team_id);
-create trigger trg_users_updated before update on users
   for each row execute function set_updated_at();
 
 -- ---------- JUGADORES (datos mínimos: nombre + dorsal) ----------

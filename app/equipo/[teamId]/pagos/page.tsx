@@ -1,5 +1,5 @@
-import { requireTeamUser } from "@/lib/auth";
-import { getTeam, getTournament, listChargesByTeam } from "@/lib/queries";
+import { requireOwnedTeam } from "@/lib/auth";
+import { getTournament, listChargesByTeam } from "@/lib/queries";
 import { payChargeAction } from "@/lib/actions/payments";
 import BuySlotsForm from "./BuySlotsForm";
 
@@ -16,21 +16,15 @@ function formatMoney(cents: number): string {
 }
 
 export default async function PagosPage({
+  params,
   searchParams,
 }: {
+  params: Promise<{ teamId: string }>;
   searchParams: Promise<{ resultado?: string }>;
 }) {
-  const user = await requireTeamUser();
+  const { teamId } = await params;
+  const { team } = await requireOwnedTeam(teamId);
   const { resultado } = await searchParams;
-  const team = await getTeam(user.team_id);
-
-  if (!team) {
-    return (
-      <main className="mx-auto max-w-2xl py-8">
-        <p className="text-zinc-400">No se encontró tu equipo.</p>
-      </main>
-    );
-  }
 
   const [tournament, charges] = await Promise.all([
     getTournament(team.tournament_id),
@@ -41,9 +35,9 @@ export default async function PagosPage({
   const history = charges.filter((c) => c.status !== "pending");
 
   return (
-    <main className="mx-auto max-w-2xl space-y-8 py-8">
+    <main className="mx-auto max-w-2xl space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Pagos</h1>
+        <h2 className="text-2xl font-bold">Pagos</h2>
         <p className="mt-1 text-sm text-zinc-400">
           {team.name} · límite actual: {team.player_limit} jugadores
         </p>
@@ -68,16 +62,16 @@ export default async function PagosPage({
 
       {tournament?.slot_price_cents ? (
         <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-          <BuySlotsForm pricePerSlotCents={tournament.slot_price_cents} />
+          <BuySlotsForm teamId={team.id} pricePerSlotCents={tournament.slot_price_cents} />
         </div>
       ) : (
         <p className="text-sm text-zinc-500">La compra de cupos no está habilitada por el momento.</p>
       )}
 
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">
           Cargos pendientes
-        </h2>
+        </h3>
         {pending.length === 0 && (
           <p className="text-sm text-zinc-500">No tienes cargos pendientes.</p>
         )}
@@ -90,7 +84,7 @@ export default async function PagosPage({
               <p className="text-zinc-100">{c.concept}</p>
               <p className="text-sm text-zinc-400">{formatMoney(c.amount_cents)}</p>
             </div>
-            <form action={payChargeAction.bind(null, c.id)}>
+            <form action={payChargeAction.bind(null, team.id, c.id)}>
               <button
                 type="submit"
                 className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-500"
@@ -103,7 +97,7 @@ export default async function PagosPage({
       </div>
 
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">Historial</h2>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">Historial</h3>
         {history.length === 0 && <p className="text-sm text-zinc-500">Sin pagos registrados.</p>}
         {history.map((c) => (
           <div key={c.id} className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">

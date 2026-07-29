@@ -70,6 +70,91 @@ export async function generateScheduleAction(
   return { error: null };
 }
 
+/**
+ * Suma al calendario ya generado los equipos activos que todavía no tienen
+ * NINGÚN partido de fase regular (típicamente uno agregado por el admin
+ * después de "Iniciar fase regular"). A diferencia de generateScheduleAction,
+ * NO borra ni toca los partidos existentes — solo agrega jornadas nuevas al
+ * final con los cruces del equipo nuevo contra cada equipo activo existente
+ * (y contra otros equipos nuevos, si se agregó más de uno a la vez).
+ */
+export async function extendScheduleAction(
+  _prev: FormState,
+  formData: FormData
+): Promise<FormState> {
+  await requireAdmin();
+
+  const tournamentIdParsed = uuidSchema.safeParse(formData.get("tournamentId"));
+  const parsed = generateScheduleSchema.safeParse({
+    doubleRound: formData.get("doubleRound") === "on",
+  });
+  if (!tournamentIdParsed.success) return { error: "Torneo inválido." };
+  if (!parsed.success) return { error: "Datos inválidos." };
+
+  const { data: teams } = await supabase
+    .from("teams")
+    .select("id")
+    .eq("tournament_id", tournamentIdParsed.data)
+    .eq("status", "active");
+  const activeTeamIds = (teams as { id: string }[] | null)?.map((t) => t.id) ?? [];
+
+  const { data: matches } = await supabase
+    .from("matches")
+    .select("round, home_team_id, away_team_id")
+    .eq("tournament_id", tournamentIdParsed.data)
+    .eq("phase", "regular");
+  const existingMatches = (matches as { round: number; home_team_id: string | null; away_team_id: string | null }[] | null) ?? [];
+
+  const teamsWithMatches = new Set(
+    existingMatches.flatMap((m) => [m.home_team_id, m.away_team_id]).filter((id): id is string => Boolean(id))
+  );
+  const newTeamIds = activeTeamIds.filter((id) => !teamsWithMatches.has(id));
+  const existingTeamIds = activeTeamIds.filter((id) => teamsWithMatches.has(id));
+
+  if (newTeamIds.length === 0) {
+    return { error: "No hay equipos nuevos que agregar al calendario." };
+  }
+
+  const pairs: [string, string][] = [];
+  for (let i = 0; i < newTeamIds.length; i++) {
+    for (const existingId of existingTeamIds) pairs.push([newTeamIds[i], existingId]);
+    for (let j = i + 1; j < newTeamIds.length; j++) pairs.push([newTeamIds[i], newTeamIds[j]]);
+  }
+
+  const maxRound = existingMatches.reduce((max, m) => Math.max(max, m.round), 0);
+  const rows = pairs.map(([a, b], i) => ({
+    tournament_id: tournamentIdParsed.data,
+    phase: "regular" as const,
+    round: maxRound + i + 1,
+    leg: 1 as const,
+    home_team_id: i % 2 === 0 ? a : b,
+    away_team_id: i % 2 === 0 ? b : a,
+    status: "scheduled" as const,
+  }));
+
+  if (parsed.data.doubleRound) {
+    const roundOffset = maxRound + pairs.length;
+    pairs.forEach(([a, b], i) => {
+      rows.push({
+        tournament_id: tournamentIdParsed.data,
+        phase: "regular" as const,
+        round: roundOffset + i + 1,
+        leg: 1 as const,
+        home_team_id: i % 2 === 0 ? b : a,
+        away_team_id: i % 2 === 0 ? a : b,
+        status: "scheduled" as const,
+      });
+    });
+  }
+
+  const { error } = await supabase.from("matches").insert(rows);
+  if (error) return { error: "No se pudo extender el calendario." };
+
+  revalidatePath("/admin/calendario");
+  revalidatePath("/calendario");
+  return { error: null, ok: true };
+}
+
 export async function createMatchAction(
   _prev: FormState,
   formData: FormData

@@ -34,6 +34,7 @@ function getSiteUrl(): string {
  */
 export async function createChargePreference(params: {
   chargeId: string;
+  teamId: string;
   title: string;
   amountCents: number;
 }): Promise<{ preferenceId: string; initPoint: string }> {
@@ -54,9 +55,9 @@ export async function createChargePreference(params: {
       external_reference: params.chargeId,
       notification_url: `${siteUrl}/api/mp/webhook`,
       back_urls: {
-        success: `${siteUrl}/equipo/pagos?resultado=ok`,
-        failure: `${siteUrl}/equipo/pagos?resultado=error`,
-        pending: `${siteUrl}/equipo/pagos?resultado=pendiente`,
+        success: `${siteUrl}/equipo/${params.teamId}/pagos?resultado=ok`,
+        failure: `${siteUrl}/equipo/${params.teamId}/pagos?resultado=error`,
+        pending: `${siteUrl}/equipo/${params.teamId}/pagos?resultado=pendiente`,
       },
       auto_return: "approved",
     },

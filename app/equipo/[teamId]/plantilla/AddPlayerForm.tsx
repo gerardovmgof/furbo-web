@@ -5,8 +5,17 @@ import { addPlayerAction, type FormState } from "./actions";
 
 const initialState: FormState = { error: null };
 
-export default function AddPlayerForm({ disabled }: { disabled: boolean }) {
-  const [state, formAction, pending] = useActionState(addPlayerAction, initialState);
+export default function AddPlayerForm({
+  teamId,
+  disabled,
+}: {
+  teamId: string;
+  disabled: boolean;
+}) {
+  const [state, formAction, pending] = useActionState(
+    addPlayerAction.bind(null, teamId),
+    initialState
+  );
 
   if (disabled) {
     return (

@@ -1,6 +1,6 @@
 // Autenticación y autorización del lado del servidor.
 // REGLA DE ORO: toda Server Action / route handler que mute datos llama
-// requireAdmin() o requireTeamUser() ANTES de tocar la base de datos.
+// requireAdmin(), requireOwnedTeam() o requireReferee() ANTES de tocar la base de datos.
 // El proxy.ts es solo la primera barrera (UX); esta capa es la que manda.
 
 import "server-only";
@@ -15,7 +15,7 @@ import {
   verifySession,
 } from "@/lib/session";
 import { isLoginBlocked, recordLoginAttempt, clientIpFromHeaders } from "@/lib/ratelimit";
-import type { SessionPayload, UserRow } from "@/lib/types";
+import type { SessionPayload, UserRow, TeamRow } from "@/lib/types";
 
 // Hash dummy (de una contraseña aleatoria descartada): cuando el usuario no
 // existe se compara contra esto para que el tiempo de respuesta no revele
@@ -54,7 +54,6 @@ export async function login(username: string, password: string): Promise<LoginRe
   const payload: SessionPayload = {
     uid: user.id,
     role: user.role,
-    teamId: user.team_id,
     tv: user.token_version,
     exp: Math.floor(Date.now() / 1000) + SESSION_MAX_AGE_SECONDS,
   };
@@ -105,15 +104,34 @@ export async function requireAdmin(): Promise<UserRow> {
   return user;
 }
 
-/**
- * Para Server Actions de delegados de equipo. Redirige a /login si no hay
- * usuario de equipo válido. El team_id para CUALQUIER mutación debe salir
- * de la fila devuelta aquí — jamás de un input del cliente.
- */
-export async function requireTeamUser(): Promise<UserRow & { team_id: string }> {
+/** Para Server Actions/páginas de dueños de equipo. Redirige a /login si no hay sesión válida de rol 'team'. */
+export async function requireTeamOwner(): Promise<UserRow> {
   const user = await getSessionUser();
-  if (!user || user.role !== "team" || !user.team_id) redirect("/login");
-  return user as UserRow & { team_id: string };
+  if (!user || user.role !== "team") redirect("/login");
+  return user;
+}
+
+/**
+ * Para cualquier acción sobre UN equipo concreto de un dueño (plantilla,
+ * pagos). Un dueño puede tener varios equipos, así que el equipo activo
+ * siempre llega por parámetro (URL/formulario) — pero se valida AQUÍ contra
+ * teams.owner_user_id antes de confiar en él. Nunca usar un teamId de
+ * cliente sin pasar por esta función primero.
+ */
+export async function requireOwnedTeam(
+  teamId: string
+): Promise<{ user: UserRow; team: TeamRow }> {
+  const user = await requireTeamOwner();
+
+  const { data: team } = await supabase
+    .from("teams")
+    .select("*")
+    .eq("id", teamId)
+    .eq("owner_user_id", user.id)
+    .maybeSingle<TeamRow>();
+  if (!team) redirect("/equipo");
+
+  return { user, team };
 }
 
 /** Para Server Actions exclusivas de árbitros (sección /arbitro). */

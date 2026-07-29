@@ -27,21 +27,6 @@ export async function listTeamsByTournament(tournamentId: string): Promise<TeamR
   return (data as TeamRow[]) ?? [];
 }
 
-/** Equipos activos de todos los torneos, con el nombre del torneo embebido. */
-export async function listActiveTeamsWithTournament(): Promise<
-  (TeamRow & { tournament_name: string })[]
-> {
-  const { data } = await supabase
-    .from("teams")
-    .select("*, tournaments(name)")
-    .eq("status", "active")
-    .order("name", { ascending: true });
-  return ((data ?? []) as (TeamRow & { tournaments: { name: string } | null })[]).map((t) => ({
-    ...t,
-    tournament_name: t.tournaments?.name ?? "—",
-  }));
-}
-
 export async function getTeam(id: string): Promise<TeamRow | null> {
   const { data } = await supabase.from("teams").select("*").eq("id", id).maybeSingle();
   return (data as TeamRow) ?? null;
@@ -250,17 +235,73 @@ export async function listReferees(): Promise<UserRow[]> {
   return (data as UserRow[]) ?? [];
 }
 
-/** Username del dueño (delegado) de cada equipo, para mostrar "Equipo - Usuario". */
-export async function teamOwnerUsernames(teamIds: string[]): Promise<Record<string, string>> {
-  if (teamIds.length === 0) return {};
+/** Dueños de equipo (role='team'), para el selector de "Dueño" del admin. */
+export async function listTeamOwnerUsers(): Promise<UserRow[]> {
   const { data } = await supabase
     .from("users")
-    .select("team_id, username")
+    .select("*")
     .eq("role", "team")
-    .in("team_id", teamIds);
+    .order("username", { ascending: true });
+  return (data as UserRow[]) ?? [];
+}
+
+/** Equipos de un dueño (un dueño puede tener varios), con el nombre del torneo embebido. */
+export async function listTeamsByOwner(
+  ownerId: string
+): Promise<(TeamRow & { tournament_name: string })[]> {
+  const { data } = await supabase
+    .from("teams")
+    .select("*, tournaments(name)")
+    .eq("owner_user_id", ownerId)
+    .order("created_at", { ascending: false });
+  return ((data ?? []) as (TeamRow & { tournaments: { name: string } | null })[]).map((t) => ({
+    ...t,
+    tournament_name: t.tournaments?.name ?? "—",
+  }));
+}
+
+/**
+ * Torneos donde un dueño de equipo puede autorregistrar un equipo nuevo:
+ * en 'draft' (el admin no le dio "Iniciar fase regular" todavía) y con
+ * precio de cupo configurado (si no, el equipo nacería sin forma de pagar
+ * registros).
+ */
+export async function listOpenTournamentsForRegistration(): Promise<TournamentRow[]> {
+  const { data } = await supabase
+    .from("tournaments")
+    .select("*")
+    .eq("status", "draft")
+    .not("slot_price_cents", "is", null)
+    .order("created_at", { ascending: false });
+  return (data as TournamentRow[]) ?? [];
+}
+
+/** Username del dueño de cada equipo, para mostrar "Equipo - Usuario". */
+export async function teamOwnerUsernames(teamIds: string[]): Promise<Record<string, string>> {
+  if (teamIds.length === 0) return {};
+  const { data: teamRows } = await supabase
+    .from("teams")
+    .select("id, owner_user_id")
+    .in("id", teamIds)
+    .not("owner_user_id", "is", null);
+  const ownerByTeam = new Map(
+    ((teamRows ?? []) as { id: string; owner_user_id: string }[]).map((t) => [
+      t.id,
+      t.owner_user_id,
+    ])
+  );
+  const ownerIds = [...new Set(ownerByTeam.values())];
+  if (ownerIds.length === 0) return {};
+
+  const { data: userRows } = await supabase.from("users").select("id, username").in("id", ownerIds);
+  const usernameById = new Map(
+    ((userRows ?? []) as { id: string; username: string }[]).map((u) => [u.id, u.username])
+  );
+
   const usernames: Record<string, string> = {};
-  for (const u of (data as { team_id: string; username: string }[]) ?? []) {
-    usernames[u.team_id] = u.username;
+  for (const [teamId, ownerId] of ownerByTeam) {
+    const username = usernameById.get(ownerId);
+    if (username) usernames[teamId] = username;
   }
   return usernames;
 }
@@ -290,22 +331,35 @@ export async function listChargesByTeam(teamId: string): Promise<ChargeRow[]> {
   return (data as ChargeRow[]) ?? [];
 }
 
-/** Delegados de equipo (role='team'), con el nombre de equipo y torneo embebidos. */
-export async function listTeamUsers(): Promise<
-  (UserRow & { team_name: string; tournament_name: string })[]
-> {
-  const { data } = await supabase
+export interface TeamOwnerWithTeams extends UserRow {
+  teams: { id: string; name: string; tournament_name: string }[];
+}
+
+/** Dueños de equipo (role='team'), con la lista de sus equipos (0, 1 o varios). */
+export async function listTeamUsers(): Promise<TeamOwnerWithTeams[]> {
+  const { data: userRows } = await supabase
     .from("users")
-    .select("*, teams(name, tournaments(name))")
+    .select("*")
     .eq("role", "team")
     .order("created_at", { ascending: false });
-  return (
-    (data ?? []) as (UserRow & {
-      teams: { name: string; tournaments: { name: string } | null } | null;
-    })[]
-  ).map((u) => ({
-    ...u,
-    team_name: u.teams?.name ?? "—",
-    tournament_name: u.teams?.tournaments?.name ?? "—",
-  }));
+  const owners = (userRows as UserRow[]) ?? [];
+  if (owners.length === 0) return [];
+
+  const { data: teamRows } = await supabase
+    .from("teams")
+    .select("*, tournaments(name)")
+    .in(
+      "owner_user_id",
+      owners.map((u) => u.id)
+    );
+
+  const teamsByOwner = new Map<string, { id: string; name: string; tournament_name: string }[]>();
+  for (const t of (teamRows ?? []) as (TeamRow & { tournaments: { name: string } | null })[]) {
+    if (!t.owner_user_id) continue;
+    const list = teamsByOwner.get(t.owner_user_id) ?? [];
+    list.push({ id: t.id, name: t.name, tournament_name: t.tournaments?.name ?? "—" });
+    teamsByOwner.set(t.owner_user_id, list);
+  }
+
+  return owners.map((u) => ({ ...u, teams: teamsByOwner.get(u.id) ?? [] }));
 }

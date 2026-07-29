@@ -23,7 +23,6 @@ export async function editTeamUserAction(
 
   const parsed = editTeamUserSchema.safeParse({
     userId: formData.get("userId"),
-    teamId: formData.get("teamId"),
     username: formData.get("username"),
   });
   if (!parsed.success) {
@@ -32,10 +31,7 @@ export async function editTeamUserAction(
 
   const { error } = await supabase
     .from("users")
-    .update({
-      username: parsed.data.username.trim().toLowerCase(),
-      team_id: parsed.data.teamId,
-    })
+    .update({ username: parsed.data.username.trim().toLowerCase() })
     .eq("id", parsed.data.userId);
   if (error) {
     const message =
@@ -54,7 +50,6 @@ export async function createTeamUserAction(
   await requireAdmin();
 
   const parsed = createTeamUserSchema.safeParse({
-    teamId: formData.get("teamId"),
     username: formData.get("username"),
     password: formData.get("password"),
   });
@@ -67,7 +62,6 @@ export async function createTeamUserAction(
     username: parsed.data.username.trim().toLowerCase(),
     password_hash,
     role: "team",
-    team_id: parsed.data.teamId,
   });
   if (error) {
     const message =
@@ -98,7 +92,6 @@ export async function createRefereeAction(
     username: parsed.data.username.trim().toLowerCase(),
     password_hash,
     role: "referee",
-    team_id: null,
   });
   if (error) {
     const message =

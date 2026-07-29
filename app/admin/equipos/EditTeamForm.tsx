@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { editTeamAction, type FormState } from "./actions";
+import type { UserRow } from "@/lib/types";
 
 const initialState: FormState = { error: null };
 
@@ -9,10 +10,14 @@ export default function EditTeamForm({
   teamId,
   currentName,
   currentPlayerLimit,
+  currentOwnerUserId,
+  owners,
 }: {
   teamId: string;
   currentName: string;
   currentPlayerLimit: number;
+  currentOwnerUserId: string | null;
+  owners: UserRow[];
 }) {
   const [state, formAction, pending] = useActionState(editTeamAction, initialState);
 
@@ -40,6 +45,18 @@ export default function EditTeamForm({
           required
           className="w-20 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
         />
+        <select
+          name="ownerUserId"
+          defaultValue={currentOwnerUserId ?? ""}
+          className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+        >
+          <option value="">Sin dueño</option>
+          {owners.map((owner) => (
+            <option key={owner.id} value={owner.id}>
+              {owner.username}
+            </option>
+          ))}
+        </select>
         <button
           type="submit"
           disabled={pending}

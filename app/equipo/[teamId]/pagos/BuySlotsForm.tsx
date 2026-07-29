@@ -9,8 +9,17 @@ function formatMoney(cents: number): string {
   return (cents / 100).toLocaleString("es-MX", { style: "currency", currency: "MXN" });
 }
 
-export default function BuySlotsForm({ pricePerSlotCents }: { pricePerSlotCents: number }) {
-  const [state, formAction, pending] = useActionState(buySlotsAction, initialState);
+export default function BuySlotsForm({
+  teamId,
+  pricePerSlotCents,
+}: {
+  teamId: string;
+  pricePerSlotCents: number;
+}) {
+  const [state, formAction, pending] = useActionState(
+    buySlotsAction.bind(null, teamId),
+    initialState
+  );
   const [count, setCount] = useState(1);
 
   return (

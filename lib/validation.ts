@@ -65,7 +65,6 @@ export const scoreSchema = z.object({
 });
 
 export const createTeamUserSchema = z.object({
-  teamId: z.string().uuid("Selecciona un equipo."),
   username: z
     .string()
     .trim()
@@ -90,12 +89,20 @@ export const resetPasswordSchema = z.object({
 
 export const editTeamUserSchema = z.object({
   userId: z.string().uuid(),
-  teamId: z.string().uuid("Selecciona un equipo."),
   username: z
     .string()
     .trim()
     .min(3, "El usuario debe tener al menos 3 caracteres.")
     .max(40, "El usuario es demasiado largo."),
+});
+
+export const registerTeamSchema = z.object({
+  tournamentId: z.string().uuid("Selecciona un torneo."),
+  name: z
+    .string()
+    .trim()
+    .min(2, "Escribe el nombre del equipo.")
+    .max(60, "El nombre es demasiado largo."),
 });
 
 export const uuidSchema = z.string().uuid();

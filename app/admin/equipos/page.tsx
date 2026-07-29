@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { listTournaments, listTeamsByTournament, activePlayerCounts } from "@/lib/queries";
+import {
+  listTournaments,
+  listTeamsByTournament,
+  activePlayerCounts,
+  listTeamOwnerUsers,
+  teamOwnerUsernames,
+} from "@/lib/queries";
 import { setTeamStatusAction } from "./actions";
 import CreateTeamForm from "./CreateTeamForm";
 import EditTeamForm from "./EditTeamForm";
@@ -30,7 +36,11 @@ export default async function EquiposPage({
 
   const selected = tournaments.find((x) => x.id === t) ?? tournaments[0];
   const teams = await listTeamsByTournament(selected.id);
-  const counts = await activePlayerCounts(teams.map((team) => team.id));
+  const [counts, owners, ownerUsernames] = await Promise.all([
+    activePlayerCounts(teams.map((team) => team.id)),
+    listTeamOwnerUsers(),
+    teamOwnerUsernames(teams.map((team) => team.id)),
+  ]);
 
   return (
     <main className="mx-auto max-w-3xl space-y-8 py-8">
@@ -49,7 +59,7 @@ export default async function EquiposPage({
       </div>
 
       <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-        <CreateTeamForm tournamentId={selected.id} />
+        <CreateTeamForm tournamentId={selected.id} owners={owners} />
       </div>
 
       <div className="space-y-3">
@@ -67,7 +77,8 @@ export default async function EquiposPage({
                     )}
                   </p>
                   <p className="text-sm text-zinc-400">
-                    {used}/{team.player_limit} jugadores registrados
+                    {used}/{team.player_limit} jugadores registrados · dueño:{" "}
+                    {ownerUsernames[team.id] ?? "sin dueño"}
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -81,6 +92,8 @@ export default async function EquiposPage({
                     teamId={team.id}
                     currentName={team.name}
                     currentPlayerLimit={team.player_limit}
+                    currentOwnerUserId={team.owner_user_id}
+                    owners={owners}
                   />
                   <form
                     action={setTeamStatusAction.bind(
