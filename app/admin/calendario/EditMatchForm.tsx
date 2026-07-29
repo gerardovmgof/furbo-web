@@ -20,6 +20,7 @@ export default function EditMatchForm({
   awayTeamId,
   kickoffAt,
   venue,
+  streamUrl,
   teams,
 }: {
   matchId: string;
@@ -28,6 +29,7 @@ export default function EditMatchForm({
   awayTeamId: string;
   kickoffAt: string | null;
   venue: string | null;
+  streamUrl: string | null;
   teams: TeamRow[];
 }) {
   const [open, setOpen] = useState(false);
@@ -106,6 +108,16 @@ export default function EditMatchForm({
           type="text"
           defaultValue={venue ?? ""}
           className="mt-1 w-28 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+        />
+      </div>
+      <div>
+        <label className="block text-xs text-zinc-400">Link de transmisión (Facebook)</label>
+        <input
+          name="streamUrl"
+          type="url"
+          placeholder="https://facebook.com/..."
+          defaultValue={streamUrl ?? ""}
+          className="mt-1 w-56 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
         />
       </div>
       <button

@@ -61,6 +61,7 @@ export interface MatchRow {
   away_team_id: string | null;
   kickoff_at: string | null;
   venue: string | null;
+  stream_url: string | null;
   status: MatchStatus;
   is_forfeit: boolean;
   home_score: number | null;

@@ -132,6 +132,7 @@ export default async function CalendarioAdminPage({
                             awayTeamId={m.away_team_id ?? ""}
                             kickoffAt={m.kickoff_at}
                             venue={m.venue}
+                            streamUrl={m.stream_url}
                             teams={activeTeams}
                           />
                           <form

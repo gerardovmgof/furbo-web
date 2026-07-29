@@ -19,6 +19,7 @@ export default function ScoreCaptureForm({
   isPlayoff,
   initialHomePenalties,
   initialAwayPenalties,
+  initialStreamUrl,
 }: {
   matchId: string;
   homeTeam: { id: string; name: string };
@@ -32,6 +33,7 @@ export default function ScoreCaptureForm({
   isPlayoff?: boolean;
   initialHomePenalties?: number | null;
   initialAwayPenalties?: number | null;
+  initialStreamUrl?: string | null;
 }) {
   const [state, formAction, pending] = useActionState(captureResultAction, initialState);
   const [forfeit, setForfeit] = useState(initialForfeit);
@@ -123,6 +125,20 @@ export default function ScoreCaptureForm({
           <PlayerGoalsList team={awayTeam} players={awayPlayers} existingGoals={existingGoals} />
         </div>
       )}
+
+      <div>
+        <label className="block text-sm text-zinc-400" htmlFor="streamUrl">
+          Link de transmisión (Facebook, opcional)
+        </label>
+        <input
+          id="streamUrl"
+          name="streamUrl"
+          type="url"
+          placeholder="https://facebook.com/..."
+          defaultValue={initialStreamUrl ?? ""}
+          className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+        />
+      </div>
 
       <button
         type="submit"

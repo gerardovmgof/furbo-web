@@ -74,7 +74,7 @@ Torneos, equipos, delegados, calendario, resultados, tablas públicas y liguilla
 
 - [x] F7 — Sorteo automático del calendario: `lib/schedule.ts` (round-robin con barajado aleatorio, soporta impares con descanso e ida/vuelta), botón "Sortear calendario" en `/admin/calendario` (solo si el torneo no tiene partidos regulares aún).
 - [x] F8 — Rol árbitro: tercer rol `referee` (sin equipo). `/arbitro` lista partidos pendientes de cualquier fase; captura resultado y goles vía el mismo componente que usa el admin (`components/ScoreCaptureForm.tsx` + `lib/actions/captureResult.ts`, ambos compartidos). El árbitro NO puede corregir un partido ya jugado — esa acción exige `requireAdmin()` implícito vía el guard `actor.role === 'referee' && match.status === 'played'`. Alta de árbitros y de "dueños de equipo" desde `/admin/usuarios` (toggle en `CreateUserForm`).
-- [ ] F9 — Link de transmisión de Facebook por partido.
+- [x] F9 — Link de transmisión de Facebook por partido: columna `matches.stream_url`, validado contra whitelist de dominios de Facebook (`lib/validation.ts#parseStreamUrl`). Editable desde `EditMatchForm` y desde la captura (`ScoreCaptureForm`); visible en `/calendario` público y en "Próximos partidos" del home.
 - [ ] F10 — Pagos con Mercado Pago (compra de cupos de jugador + cargos de renta de cancha). **Deroga la regla histórica "sin pagos en la app"** — Gerardo aprobó explícitamente esta excepción; la app nunca guarda datos de tarjeta, todo lo procesa Mercado Pago (Checkout Pro) vía webhook idempotente.
 
 Marca la casilla correspondiente en este archivo al completar una fase (en el mismo commit).

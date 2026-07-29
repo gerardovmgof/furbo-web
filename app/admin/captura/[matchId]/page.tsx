@@ -68,6 +68,7 @@ export default async function CapturaPage({
           isPlayoff={isPlayoff}
           initialHomePenalties={match.home_penalties}
           initialAwayPenalties={match.away_penalties}
+          initialStreamUrl={match.stream_url}
         />
       </div>
 

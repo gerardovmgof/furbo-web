@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { matchSchema, uuidSchema, generateScheduleSchema } from "@/lib/validation";
+import { matchSchema, uuidSchema, generateScheduleSchema, parseStreamUrl } from "@/lib/validation";
 import { generateRoundRobin } from "@/lib/schedule";
 
 export interface FormState {
@@ -124,6 +124,8 @@ export async function editMatchAction(
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Datos inválidos." };
   }
+  const streamUrl = parseStreamUrl(formData.get("streamUrl"));
+  if ("error" in streamUrl) return { error: streamUrl.error };
 
   // Solo se puede editar rival/fecha/jornada mientras el partido no se haya
   // jugado — cambiar los equipos de un partido con resultado dejaría goles
@@ -136,6 +138,7 @@ export async function editMatchAction(
       away_team_id: parsed.data.awayTeamId,
       kickoff_at: parsed.data.kickoffAt ? new Date(parsed.data.kickoffAt).toISOString() : null,
       venue: parsed.data.venue || null,
+      stream_url: streamUrl.value,
     })
     .eq("id", matchIdParsed.data)
     .neq("status", "played")

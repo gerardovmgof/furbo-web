@@ -8,7 +8,7 @@
 import { revalidatePath } from "next/cache";
 import { requireAdminOrReferee } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { scoreSchema, uuidSchema } from "@/lib/validation";
+import { scoreSchema, uuidSchema, parseStreamUrl } from "@/lib/validation";
 import { getMatch, getTournament, listLegsForSlot } from "@/lib/queries";
 import { seriesStatus, nextSlot, type SeriesLeg } from "@/lib/bracket";
 import type { MatchRow } from "@/lib/types";
@@ -66,6 +66,9 @@ export async function captureResultAction(
   const penalties = parsePenalties(formData);
   if ("error" in penalties) return { error: penalties.error };
 
+  const streamUrl = parseStreamUrl(formData.get("streamUrl"));
+  if ("error" in streamUrl) return { error: streamUrl.error };
+
   const { error: matchError } = await supabase
     .from("matches")
     .update({
@@ -75,6 +78,7 @@ export async function captureResultAction(
       away_score: parsed.data.awayScore,
       home_penalties: penalties.homePenalties,
       away_penalties: penalties.awayPenalties,
+      stream_url: streamUrl.value,
       updated_by: actor.id,
     })
     .eq("id", matchId);

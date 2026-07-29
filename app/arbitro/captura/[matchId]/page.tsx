@@ -81,6 +81,7 @@ export default async function ArbitroCapturaPage({
           isPlayoff={isPlayoff}
           initialHomePenalties={match.home_penalties}
           initialAwayPenalties={match.away_penalties}
+          initialStreamUrl={match.stream_url}
         />
       </div>
 

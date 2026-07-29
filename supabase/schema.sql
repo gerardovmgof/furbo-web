@@ -93,6 +93,7 @@ create table matches (
   away_team_id   uuid references teams(id) on delete restrict,
   kickoff_at     timestamptz,             -- null = horario por definir
   venue          text,
+  stream_url     text,                    -- link de transmisión (Facebook), opcional
   status         text not null default 'scheduled'
                  check (status in ('scheduled','played','postponed','canceled')),
   is_forfeit     boolean not null default false,  -- partido por default

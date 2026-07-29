@@ -104,6 +104,38 @@ export const generateScheduleSchema = z.object({
   doubleRound: z.boolean(),
 });
 
+// El link de transmisión se valida a mano (no con un schema zod plano)
+// porque necesita distinguir "vacío = quitar el link" de "URL inválida",
+// además de revisar el dominio contra una whitelist — mismo espíritu que
+// parsePenalties() en lib/actions/captureResult.ts.
+const STREAM_URL_HOSTS = new Set([
+  "facebook.com",
+  "www.facebook.com",
+  "m.facebook.com",
+  "fb.watch",
+]);
+
+export function parseStreamUrl(
+  raw: FormDataEntryValue | null
+): { value: string | null } | { error: string } {
+  const trimmed = typeof raw === "string" ? raw.trim() : "";
+  if (!trimmed) return { value: null };
+  if (trimmed.length > 500) return { error: "El link de transmisión es demasiado largo." };
+
+  let url: URL;
+  try {
+    url = new URL(trimmed);
+  } catch {
+    return { error: "El link de transmisión no es una URL válida." };
+  }
+  if (url.protocol !== "https:" || !STREAM_URL_HOSTS.has(url.hostname)) {
+    return {
+      error: "El link de transmisión debe ser de Facebook (facebook.com o fb.watch).",
+    };
+  }
+  return { value: trimmed };
+}
+
 export const matchSchema = z
   .object({
     round: z.coerce

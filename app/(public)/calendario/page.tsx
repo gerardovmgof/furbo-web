@@ -75,6 +75,16 @@ export default async function CalendarioPage() {
                       {m.is_forfeit && " · default"} · {formatKickoff(m.kickoff_at)}
                       {m.venue && ` · ${m.venue}`}
                     </p>
+                    {m.stream_url && (
+                      <a
+                        href={m.stream_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 inline-block text-sm text-emerald-400 hover:underline"
+                      >
+                        🔴 Ver transmisión
+                      </a>
+                    )}
                   </div>
                 ))}
             </div>
