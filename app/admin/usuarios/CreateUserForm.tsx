@@ -1,17 +1,19 @@
 "use client";
 
-import { useActionState, useState, useEffect, useRef } from "react";
+import { useActionState } from "react";
 import { createTeamUserAction, createRefereeAction, type FormState } from "./actions";
 import type { TeamRow } from "@/lib/types";
 
 const initialState: FormState = { error: null };
+
+const TOGGLE_LABEL_CLASS =
+  "cursor-pointer rounded-lg px-3 py-1.5 border border-zinc-700 text-zinc-300 hover:bg-zinc-800";
 
 export default function CreateUserForm({
   teams,
 }: {
   teams: (TeamRow & { tournament_name: string })[];
 }) {
-  const [kind, setKind] = useState<"team" | "referee">("team");
   const [teamState, teamFormAction, teamPending] = useActionState(
     createTeamUserAction,
     initialState
@@ -21,46 +23,36 @@ export default function CreateUserForm({
     initialState
   );
 
-  const teamFormRef = useRef<HTMLFormElement>(null);
-  const refereeFormRef = useRef<HTMLFormElement>(null);
-  const prevTeamState = useRef(teamState);
-  const prevRefereeState = useRef(refereeState);
-
-  // Al crear con éxito, limpia los campos para la siguiente alta — es la
-  // única señal visible de que sí se creó (el nuevo usuario aparece en la
-  // lista de abajo, pero eso no siempre es visible sin hacer scroll).
-  useEffect(() => {
-    if (teamState !== prevTeamState.current && teamState.ok) teamFormRef.current?.reset();
-    prevTeamState.current = teamState;
-  }, [teamState]);
-  useEffect(() => {
-    if (refereeState !== prevRefereeState.current && refereeState.ok) {
-      refereeFormRef.current?.reset();
-    }
-    prevRefereeState.current = refereeState;
-  }, [refereeState]);
-
   return (
     <div className="space-y-3">
+      {/* Radios ocultos que manejan el toggle con CSS puro (peer-checked) —
+          no depende de que React se active en el navegador. */}
+      <input
+        type="radio"
+        name="user-kind"
+        id="kind-team"
+        defaultChecked
+        className="peer/team sr-only"
+      />
+      <input type="radio" name="user-kind" id="kind-referee" className="peer/referee sr-only" />
+
       <div className="flex gap-2 text-sm">
-        <button
-          type="button"
-          onClick={() => setKind("team")}
-          className={`rounded-lg px-3 py-1.5 ${kind === "team" ? "bg-emerald-600 text-white" : "border border-zinc-700 text-zinc-300 hover:bg-zinc-800"}`}
+        <label
+          htmlFor="kind-team"
+          className={`${TOGGLE_LABEL_CLASS} peer-checked/team:border-transparent peer-checked/team:bg-emerald-600 peer-checked/team:text-white`}
         >
           Dueño de equipo
-        </button>
-        <button
-          type="button"
-          onClick={() => setKind("referee")}
-          className={`rounded-lg px-3 py-1.5 ${kind === "referee" ? "bg-emerald-600 text-white" : "border border-zinc-700 text-zinc-300 hover:bg-zinc-800"}`}
+        </label>
+        <label
+          htmlFor="kind-referee"
+          className={`${TOGGLE_LABEL_CLASS} peer-checked/referee:border-transparent peer-checked/referee:bg-emerald-600 peer-checked/referee:text-white`}
         >
           Árbitro
-        </button>
+        </label>
       </div>
 
-      {kind === "team" &&
-        (teams.length === 0 ? (
+      <div className="hidden peer-checked/team:block">
+        {teams.length === 0 ? (
           <p className="text-sm text-zinc-500">
             No hay equipos activos todavía. Da de alta un equipo en{" "}
             <a href="/admin/equipos" className="text-emerald-400 underline">
@@ -69,7 +61,7 @@ export default function CreateUserForm({
             antes de crear un dueño de equipo.
           </p>
         ) : (
-          <form ref={teamFormRef} action={teamFormAction} className="flex flex-wrap items-end gap-2">
+          <form action={teamFormAction} className="flex flex-wrap items-end gap-2">
             <div>
               <label className="block text-sm font-medium text-zinc-300" htmlFor="teamId">
                 Equipo
@@ -125,10 +117,11 @@ export default function CreateUserForm({
               <p className="w-full text-sm text-emerald-400">✅ Dueño de equipo creado.</p>
             )}
           </form>
-        ))}
+        )}
+      </div>
 
-      {kind === "referee" && (
-        <form ref={refereeFormRef} action={refereeFormAction} className="flex flex-wrap items-end gap-2">
+      <div className="hidden peer-checked/referee:block">
+        <form action={refereeFormAction} className="flex flex-wrap items-end gap-2">
           <div>
             <label className="block text-sm font-medium text-zinc-300" htmlFor="ref-username">
               Usuario
@@ -165,11 +158,9 @@ export default function CreateUserForm({
           {refereeState.error && (
             <p className="w-full text-sm text-red-400">{refereeState.error}</p>
           )}
-          {refereeState.ok && (
-            <p className="w-full text-sm text-emerald-400">✅ Árbitro creado.</p>
-          )}
+          {refereeState.ok && <p className="w-full text-sm text-emerald-400">✅ Árbitro creado.</p>}
         </form>
-      )}
+      </div>
     </div>
   );
 }
