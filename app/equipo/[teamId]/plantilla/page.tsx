@@ -18,6 +18,25 @@ export default async function PlantillaPage({
 
   const full = players.length >= team.player_limit;
   const closed = !tournament?.registration_open || team.status !== "active";
+  const disabled = full || closed;
+
+  // El mensaje genérico ("ya registraste a todos... o el registro está
+  // cerrado") no le decía al dueño CUÁL de los dos era, y "0/0" en
+  // particular se veía como un error en vez de "todavía no compras cupos".
+  // Se distingue el motivo para que sepa si el problema se arregla en Pagos.
+  let disabledMessage: string | null = null;
+  let showPagosLink = false;
+  if (team.status !== "active") {
+    disabledMessage = "Tu equipo no está activo en este torneo en este momento.";
+  } else if (!tournament?.registration_open) {
+    disabledMessage = "El registro de jugadores está cerrado por el momento.";
+  } else if (team.player_limit === 0) {
+    disabledMessage = "Tu equipo todavía no tiene cupos comprados.";
+    showPagosLink = true;
+  } else if (full) {
+    disabledMessage = `Ya registraste a los ${team.player_limit} jugadores permitidos. Si necesitas más, compra cupos adicionales.`;
+    showPagosLink = true;
+  }
 
   return (
     <main className="mx-auto max-w-2xl space-y-8">
@@ -31,7 +50,12 @@ export default async function PlantillaPage({
       </div>
 
       <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-        <AddPlayerForm teamId={team.id} disabled={full || closed} />
+        <AddPlayerForm
+          teamId={team.id}
+          disabled={disabled}
+          disabledMessage={disabledMessage}
+          showPagosLink={showPagosLink}
+        />
       </div>
 
       <div className="space-y-2">

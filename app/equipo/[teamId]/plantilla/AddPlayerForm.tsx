@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { addPlayerAction, type FormState } from "./actions";
 
@@ -8,9 +9,13 @@ const initialState: FormState = { error: null };
 export default function AddPlayerForm({
   teamId,
   disabled,
+  disabledMessage,
+  showPagosLink,
 }: {
   teamId: string;
   disabled: boolean;
+  disabledMessage: string | null;
+  showPagosLink: boolean;
 }) {
   const [state, formAction, pending] = useActionState(
     addPlayerAction.bind(null, teamId),
@@ -20,7 +25,15 @@ export default function AddPlayerForm({
   if (disabled) {
     return (
       <p className="text-sm text-zinc-500">
-        Ya registraste a todos los jugadores permitidos, o el registro está cerrado.
+        {disabledMessage ?? "Ya registraste a todos los jugadores permitidos, o el registro está cerrado."}
+        {showPagosLink && (
+          <>
+            {" "}
+            <Link href={`/equipo/${teamId}/pagos`} className="text-emerald-400 underline">
+              Compra cupos en Pagos.
+            </Link>
+          </>
+        )}
       </p>
     );
   }
