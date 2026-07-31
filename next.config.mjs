@@ -1,5 +1,10 @@
 // Headers de seguridad. Sin scripts/estilos de terceros (next/font/google
 // se auto-hospeda en build), así que la CSP puede ser estricta sin nonces.
+// form-action necesita los dominios de checkout de Mercado Pago: los
+// Server Actions de pago responden con un redirect (303) hacia ahí, y sin
+// esos hosts en la whitelist el navegador bloquea la redirección en
+// silencio (el server sí crea la preferencia bien, pero el click "no hace
+// nada" — así se manifestó este bug la primera vez).
 const cspHeader = `
   default-src 'self';
   script-src 'self';
@@ -8,7 +13,7 @@ const cspHeader = `
   font-src 'self';
   object-src 'none';
   base-uri 'self';
-  form-action 'self';
+  form-action 'self' https://www.mercadopago.com.mx https://sandbox.mercadopago.com.mx;
   frame-ancestors 'none';
   upgrade-insecure-requests;
 `
