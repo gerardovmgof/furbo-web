@@ -2,7 +2,6 @@
 
 Plataforma web para gestión de ligas de fútbol amateur: tabla de goleo, posiciones, calendario, y registro de jugadores por equipo mediante códigos.
 
-- **Producción:** https://furbo-web.vercel.app
 - **Stack:** Next.js (App Router) + JavaScript + Tailwind CSS 4, deploy en Vercel
 - **Equipo:** Gerardo (`gerardovmgof`) y Sebastián
 
