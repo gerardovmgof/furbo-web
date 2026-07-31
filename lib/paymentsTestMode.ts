@@ -6,5 +6,5 @@
 //
 // Ponlo en `false` en cuanto MP_ACCESS_TOKEN esté configurado en producción
 // — y en cuanto ya no haga falta, borra este archivo y los usos en
-// lib/actions/payments.ts y app/equipo/[teamId]/pagos/page.tsx.
+// app/equipo/[teamId]/pagos/{buy-slots,pay-charge}/route.ts.
 export const SKIP_MERCADOPAGO_FOR_TESTING = false;

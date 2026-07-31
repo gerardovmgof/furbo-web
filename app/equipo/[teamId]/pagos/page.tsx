@@ -1,6 +1,5 @@
 import { requireOwnedTeam } from "@/lib/auth";
 import { getTournament, listChargesByTeam } from "@/lib/queries";
-import { payChargeAction } from "@/lib/actions/payments";
 import { SKIP_MERCADOPAGO_FOR_TESTING } from "@/lib/paymentsTestMode";
 import BuySlotsForm from "./BuySlotsForm";
 
@@ -93,7 +92,8 @@ export default async function PagosPage({
               <p className="text-zinc-100">{c.concept}</p>
               <p className="text-sm text-zinc-400">{formatMoney(c.amount_cents)}</p>
             </div>
-            <form action={payChargeAction.bind(null, team.id, c.id)}>
+            <form action={`/equipo/${team.id}/pagos/pay-charge`} method="POST">
+              <input type="hidden" name="chargeId" value={c.id} />
               <button
                 type="submit"
                 className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-500"

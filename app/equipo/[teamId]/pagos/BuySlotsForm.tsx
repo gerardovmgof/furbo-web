@@ -1,9 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { buySlotsAction, type FormState } from "@/lib/actions/payments";
-
-const initialState: FormState = { error: null };
+import { useState } from "react";
 
 function formatMoney(cents: number): string {
   return (cents / 100).toLocaleString("es-MX", { style: "currency", currency: "MXN" });
@@ -16,14 +13,15 @@ export default function BuySlotsForm({
   teamId: string;
   pricePerSlotCents: number;
 }) {
-  const [state, formAction, pending] = useActionState(
-    buySlotsAction.bind(null, teamId),
-    initialState
-  );
   const [count, setCount] = useState(1);
 
   return (
-    <form action={formAction} className="space-y-3">
+    // action apunta a un Route Handler (no un Server Action): así el envío
+    // es SIEMPRE una navegación real del navegador, sin fetch() de por
+    // medio — necesario porque el destino final (tras el POST) es el
+    // checkout externo de Mercado Pago, y fetch() no puede seguir un
+    // redirect cross-origin.
+    <form action={`/equipo/${teamId}/pagos/buy-slots`} method="POST" className="space-y-3">
       <div>
         <p className="font-semibold text-zinc-100">Comprar cupos de jugador</p>
         <p className="text-sm text-zinc-400">{formatMoney(pricePerSlotCents)} por cupo.</p>
@@ -48,12 +46,10 @@ export default function BuySlotsForm({
       </div>
       <button
         type="submit"
-        disabled={pending}
-        className="rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white transition hover:bg-emerald-500 disabled:opacity-50"
+        className="rounded-lg bg-emerald-600 px-4 py-2 font-semibold text-white transition hover:bg-emerald-500"
       >
-        {pending ? "Redirigiendo…" : "Pagar con Mercado Pago"}
+        Pagar con Mercado Pago
       </button>
-      {state.error && <p className="text-sm text-red-400">{state.error}</p>}
     </form>
   );
 }
