@@ -27,7 +27,7 @@ export default async function UsuariosPage() {
         {owners.length === 0 && <p className="text-sm text-zinc-500">Aún no hay dueños de equipo.</p>}
         {owners.map((u) => (
           <div key={u.id} className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="font-semibold text-zinc-100">{u.username}</p>
                 <p className="text-sm text-zinc-400">
@@ -50,7 +50,7 @@ export default async function UsuariosPage() {
         {referees.length === 0 && <p className="text-sm text-zinc-500">Aún no hay árbitros.</p>}
         {referees.map((r) => (
           <div key={r.id} className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <p className="font-semibold text-zinc-100">{r.username}</p>
               <ResetPasswordForm userId={r.id} />
             </div>

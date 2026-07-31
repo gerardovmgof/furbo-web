@@ -67,7 +67,7 @@ export default async function PlantillaPage({
         {players.map((p) => (
           <div
             key={p.id}
-            className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3"
+            className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3"
           >
             <p className="text-zinc-100">
               <span className="mr-2 inline-block w-8 text-center font-mono text-zinc-400">

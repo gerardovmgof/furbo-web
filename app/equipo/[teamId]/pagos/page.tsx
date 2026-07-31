@@ -86,7 +86,7 @@ export default async function PagosPage({
         {pending.map((c) => (
           <div
             key={c.id}
-            className="flex items-center justify-between gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+            className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4"
           >
             <div>
               <p className="text-zinc-100">{c.concept}</p>

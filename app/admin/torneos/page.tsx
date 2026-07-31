@@ -35,7 +35,7 @@ export default async function TorneosPage() {
             key={t.id}
             className="rounded-xl border border-zinc-800 bg-zinc-900 p-4"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <p className="font-semibold text-zinc-100">{t.name}</p>
                 <p className="text-sm text-zinc-400">

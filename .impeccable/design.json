@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-31T17:41:48Z",
+  "title": "Design System: Furbo Web",
+  "extensions": {
+    "colorMeta": {
+      "floodlight-emerald": {
+        "role": "primary",
+        "displayName": "Floodlight Emerald",
+        "canonical": "oklch(60% 0.14 163)",
+        "tonalRamp": ["#022c22", "#064e3b", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#6ee7b7"]
+      },
+      "night-pitch": {
+        "role": "neutral",
+        "displayName": "Night Pitch",
+        "canonical": "oklch(15% 0.005 285)",
+        "tonalRamp": ["#09090b", "#18181b", "#27272a", "#3f3f46", "#52525b", "#71717a", "#a1a1aa", "#d4d4d8"]
+      },
+      "day-pitch": {
+        "role": "neutral",
+        "displayName": "Day Pitch",
+        "canonical": "oklch(99% 0 0)",
+        "tonalRamp": ["#ffffff", "#fafafa", "#f4f4f5", "#e4e4e7", "#d4d4d8", "#a1a1aa", "#71717a", "#52525b"]
+      },
+      "card-red": {
+        "role": "error",
+        "displayName": "Card Red",
+        "canonical": "oklch(70% 0.19 22)",
+        "tonalRamp": ["#450a0a", "#7f1d1d", "#991b1b", "#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fecaca"]
+      },
+      "flag-amber": {
+        "role": "warning",
+        "displayName": "Flag Amber",
+        "canonical": "oklch(85% 0.15 85)",
+        "tonalRamp": ["#451a03", "#78350f", "#92400e", "#b45309", "#d97706", "#f59e0b", "#fcd34d", "#fde68a"]
+      }
+    },
+    "typographyMeta": {
+      "title": { "displayName": "Title", "purpose": "Encabezado de página o sección (h1/h2)." },
+      "body": { "displayName": "Body", "purpose": "Contenido general, nombres, párrafos de ayuda." },
+      "label": { "displayName": "Label", "purpose": "Etiquetas de formulario y texto secundario de tarjeta." },
+      "data": { "displayName": "Data", "purpose": "Marcador, dorsal, montos — monoespaciada, solo para cifras exactas." }
+    },
+    "shadows": [
+      { "name": "isolated-card", "value": "0 20px 25px -5px rgba(0,0,0,0.5), 0 8px 10px -6px rgba(0,0,0,0.5)", "purpose": "Único uso en todo el sistema: la tarjeta de login, sola en una página vacía sin otras tarjetas de referencia." }
+    ],
+    "motion": [],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción primaria de una pantalla — una sola por vista.",
+      "html": "<button class=\"ds-btn-primary\">Guardar</button>",
+      "css": ".ds-btn-primary { background: #059669; color: #f4f4f5; font-weight: 600; padding: 8px 16px; border: none; border-radius: 8px; transition: background 0.15s ease-out; cursor: pointer; } .ds-btn-primary:hover { background: #10b981; } .ds-btn-primary:focus-visible { outline: 2px solid #34d399; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Acción secundaria o de navegación — borde neutro, sin relleno.",
+      "html": "<button class=\"ds-btn-secondary\">Cancelar</button>",
+      "css": ".ds-btn-secondary { background: transparent; color: #d4d4d8; font-weight: 500; padding: 6px 12px; border: 1px solid #3f3f46; border-radius: 8px; transition: background 0.15s ease-out; cursor: pointer; } .ds-btn-secondary:hover { background: #27272a; } .ds-btn-secondary:focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Eliminar, dar de baja, cancelar cargo — siempre borde rojo, nunca relleno.",
+      "html": "<button class=\"ds-btn-destructive\">Eliminar</button>",
+      "css": ".ds-btn-destructive { background: transparent; color: #f87171; font-weight: 500; padding: 6px 12px; border: 1px solid #7f1d1d; border-radius: 8px; transition: background 0.15s ease-out; cursor: pointer; } .ds-btn-destructive:hover { background: #450a0a; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Contenedor base — fondo un paso sobre el fondo de página, borde de 1px, sin sombra.",
+      "html": "<div class=\"ds-card\"><p class=\"ds-card-title\">Torneo Prueba</p><p class=\"ds-card-subtitle\">Clausura 2026 · Registro abierto</p></div>",
+      "css": ".ds-card { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 16px; } .ds-card-title { color: #f4f4f5; font-weight: 600; font-size: 1rem; margin: 0 0 4px; } .ds-card-subtitle { color: #a1a1aa; font-size: 0.875rem; margin: 0; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de formulario — fondo igual al de página (hueco a llenar), borde un paso más visible que el de tarjeta, foco emerald.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Nombre del equipo\" />",
+      "css": ".ds-input { background: #09090b; color: #f4f4f5; border: 1px solid #3f3f46; border-radius: 8px; padding: 8px 12px; font-size: 1rem; width: 100%; box-sizing: border-box; } .ds-input::placeholder { color: #71717a; } .ds-input:focus { outline: none; border-color: #059669; box-shadow: 0 0 0 1px #059669; }"
+    },
+    {
+      "name": "Nav Tab (active)",
+      "kind": "nav",
+      "refersTo": "nav-tab-active",
+      "description": "Pestaña de navegación activa — única con fondo sólido emerald; el resto son texto plano sin fondo.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-tab ds-nav-tab--active\">Torneos</a><a class=\"ds-nav-tab\">Equipos</a><a class=\"ds-nav-tab\">Usuarios</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 4px; overflow-x: auto; } .ds-nav-tab { color: #a1a1aa; font-size: 0.875rem; font-weight: 500; padding: 6px 12px; border-radius: 8px; text-decoration: none; white-space: nowrap; transition: background 0.15s ease-out, color 0.15s ease-out; } .ds-nav-tab:hover { background: #27272a; color: #f4f4f5; } .ds-nav-tab--active { background: #059669; color: #f4f4f5; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La Cancha de Noche (The Night Pitch)",
+    "overview": "Furbo Web es una herramienta de operación real, no una vitrina: la organizadora administra torneos con dinero de por medio, el árbitro captura resultados parado en la cancha, el dueño de equipo entra una vez cada tanto y necesita entender todo sin ayuda. El sistema actual (modo oscuro, hoy la única variante implementada) parte de una imagen concreta: la cancha bajo reflectores por la noche — un fondo casi negro que es el pasto en penumbra, cortado por un único acento verde esmeralda que es la luz de los reflectores marcando lo que importa. Un segundo tiempo del mismo partido, El Partido de Día, es el modo claro: la misma cancha, ahora de día, motivado por una necesidad real — los árbitros capturan resultados bajo sol directo, donde el modo oscuro es ilegible.",
+    "keyCharacteristics": [
+      "Un solo acento (emerald) en escasez deliberada — nunca decorativo, siempre funcional",
+      "Plano por diseño: la jerarquía viene de tres escalones de fondo y un borde de 1px, no de sombras",
+      "Misma familia neutra (zinc) en los dos modos, invertida — no dos paletas distintas",
+      "Tipografía única (Geist Sans) con Geist Mono reservado exclusivamente para datos tabulares"
+    ],
+    "rules": [
+      { "name": "The One Light Rule", "body": "El emerald es el único color que puede indicar \"esto es interactivo\" o \"esto es lo importante en esta pantalla\".", "section": "colors" },
+      { "name": "The Same Pitch Rule", "body": "Modo noche y modo día son la misma familia zinc invertida, nunca dos paletas distintas ni un neutro cálido nuevo.", "section": "colors" },
+      { "name": "The No Display Rule", "body": "No hay un tamaño \"hero\" en todo el sistema — el título más grande es 1.5rem.", "section": "typography" },
+      { "name": "The Flat-by-Default Rule", "body": "Ninguna tarjeta, botón o modal lleva sombra a menos que esté completamente sola en la pantalla sin otro elemento de referencia.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do usar Floodlight Emerald para una sola acción primaria por pantalla, nunca dos.",
+      "Do mantener la jerarquía de texto en cuatro pasos de zinc (primary/secondary/muted/faint).",
+      "Do usar Geist Mono solo para datos tabulares exactos (marcador, dorsal, monto).",
+      "Do construir el modo claro invirtiendo la misma familia zinc, tono por tono.",
+      "Do dejar el sistema plano: fondo + borde de 1px es suficiente jerarquía."
+    ],
+    "donts": [
+      "Don't usar plantillas genéricas de admin dashboard.",
+      "Don't caer en estética infantil o casual de app de hobby.",
+      "Don't usar border-left grueso como acento de color en tarjetas o filas de tabla.",
+      "Don't usar un beige/crema/sand como fondo del modo claro.",
+      "Don't agregar una segunda familia tipográfica para \"jerarquía visual\".",
+      "Don't agregar sombras decorativas a tarjetas que ya tienen otras tarjetas alrededor."
+    ]
+  }
+}

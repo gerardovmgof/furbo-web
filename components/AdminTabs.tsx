@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+// "Panel" no está aquí a propósito: el título del header ("⚽ Furbo Web —
+// Administración") ya es un link a /admin — tenerlo también como pestaña
+// duplicaba el mismo destino en dos menús a la vista al mismo tiempo,
+// justo la confusión que reportó la primera prueba de usuario real.
 const TABS = [
-  { href: "/admin", label: "Panel" },
   { href: "/admin/torneos", label: "Torneos" },
   { href: "/admin/equipos", label: "Equipos" },
   { href: "/admin/usuarios", label: "Usuarios" },
@@ -19,8 +22,7 @@ export default function AdminTabs() {
   return (
     <nav className="flex gap-1 overflow-x-auto border-t border-zinc-800 px-4 py-2">
       {TABS.map((tab) => {
-        const active =
-          tab.href === "/admin" ? pathname === "/admin" : pathname.startsWith(tab.href);
+        const active = pathname.startsWith(tab.href);
         return (
           <Link
             key={tab.href}

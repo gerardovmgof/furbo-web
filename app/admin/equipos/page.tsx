@@ -68,7 +68,7 @@ export default async function EquiposPage({
           const used = counts[team.id] ?? 0;
           return (
             <div key={team.id} className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="font-semibold text-zinc-100">
                     {team.name}
@@ -81,7 +81,7 @@ export default async function EquiposPage({
                     {ownerUsernames[team.id] ?? "sin dueño"}
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Link
                     href={`/admin/equipos/${team.id}`}
                     className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800"
