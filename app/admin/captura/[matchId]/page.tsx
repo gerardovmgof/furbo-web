@@ -12,7 +12,7 @@ export default async function CapturaPage({
   if (!match) {
     return (
       <main className="mx-auto max-w-md py-8">
-        <p className="text-zinc-400">No se encontró el partido.</p>
+        <p className="text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">No se encontró el partido.</p>
       </main>
     );
   }
@@ -20,10 +20,10 @@ export default async function CapturaPage({
   if (!match.home_team_id || !match.away_team_id) {
     return (
       <main className="mx-auto max-w-md py-8">
-        <p className="text-zinc-400">
+        <p className="text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           Este cruce aún no está definido — falta que se resuelva la ronda anterior.
         </p>
-        <a href="/admin/liguilla" className="mt-3 inline-block text-sm text-emerald-400 underline">
+        <a href="/admin/liguilla" className="mt-3 inline-block text-sm text-emerald-700 dark:text-emerald-400 underline">
           ← Volver a la liguilla
         </a>
       </main>
@@ -47,14 +47,14 @@ export default async function CapturaPage({
         <h1 className="text-2xl font-bold">
           {homeTeam.name} vs {awayTeam.name}
         </h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           {isPlayoff
             ? `Liguilla · ronda ${match.round}${match.leg === 2 ? " · vuelta" : ""}`
             : `Jornada ${match.round}`}
         </p>
       </div>
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-6">
         <ScoreCaptureForm
           matchId={match.id}
           homeTeam={homeTeam}
@@ -74,7 +74,7 @@ export default async function CapturaPage({
 
       <a
         href={isPlayoff ? "/admin/liguilla" : "/admin/calendario"}
-        className="text-sm text-emerald-400 underline"
+        className="text-sm text-emerald-700 dark:text-emerald-400 underline"
       >
         ← Volver
       </a>

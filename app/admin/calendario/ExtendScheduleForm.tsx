@@ -18,18 +18,18 @@ export default function ExtendScheduleForm({
     <form action={formAction} className="space-y-3">
       <input type="hidden" name="tournamentId" value={tournamentId} />
       <div>
-        <p className="font-semibold text-zinc-100">Agregar equipos nuevos al calendario</p>
-        <p className="text-sm text-zinc-400">
+        <p className="font-semibold text-zinc-900 dark:text-zinc-100">Agregar equipos nuevos al calendario</p>
+        <p className="text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           {newTeamNames.join(", ")} no {newTeamNames.length === 1 ? "tiene" : "tienen"} partidos
           todavía. Se les generan jornadas nuevas contra cada equipo activo — los partidos y
           resultados ya existentes no se tocan.
         </p>
       </div>
-      <label className="flex items-center gap-2 text-sm text-zinc-300">
+      <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
         <input
           type="checkbox"
           name="doubleRound"
-          className="h-4 w-4 rounded border-zinc-700 bg-zinc-950"
+          className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950"
         />
         Ida y vuelta
       </label>
@@ -40,9 +40,9 @@ export default function ExtendScheduleForm({
       >
         {pending ? "Agregando…" : "Agregar al calendario"}
       </button>
-      {state.error && <p className="text-sm text-red-400">{state.error}</p>}
+      {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
       {state.ok && (
-        <p className="text-sm text-emerald-400">✅ Calendario actualizado con las nuevas jornadas.</p>
+        <p className="text-sm text-emerald-700 dark:text-emerald-400">✅ Calendario actualizado con las nuevas jornadas.</p>
       )}
     </form>
   );

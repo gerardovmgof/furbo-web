@@ -19,7 +19,7 @@ export default function CreateTeamForm({
     <form action={formAction} className="flex flex-wrap items-end gap-2">
       <input type="hidden" name="tournamentId" value={tournamentId} />
       <div>
-        <label className="block text-sm font-medium text-zinc-300" htmlFor="name">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="name">
           Nombre del equipo
         </label>
         <input
@@ -27,11 +27,11 @@ export default function CreateTeamForm({
           name="name"
           type="text"
           required
-          className="mt-1 w-56 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-56 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-300" htmlFor="playerLimit">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="playerLimit">
           Registros pagados
         </label>
         <input
@@ -42,18 +42,18 @@ export default function CreateTeamForm({
           max={99}
           defaultValue={12}
           required
-          className="mt-1 w-28 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-28 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-300" htmlFor="ownerUserId">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="ownerUserId">
           Dueño
         </label>
         <select
           id="ownerUserId"
           name="ownerUserId"
           defaultValue=""
-          className="mt-1 w-40 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-40 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         >
           <option value="">Sin dueño</option>
           {owners.map((owner) => (
@@ -70,7 +70,7 @@ export default function CreateTeamForm({
       >
         {pending ? "Creando…" : "Agregar equipo"}
       </button>
-      {state.error && <p className="w-full text-sm text-red-400">{state.error}</p>}
+      {state.error && <p className="w-full text-sm text-red-600 dark:text-red-400">{state.error}</p>}
     </form>
   );
 }

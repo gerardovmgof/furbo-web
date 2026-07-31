@@ -42,14 +42,14 @@ export default function ScoreCaptureForm({
     <form action={formAction} className="space-y-6">
       <input type="hidden" name="matchId" value={matchId} />
 
-      <div className="flex items-center gap-2 text-sm text-zinc-300">
+      <div className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
         <input
           id="isForfeit"
           name="isForfeit"
           type="checkbox"
           checked={forfeit}
           onChange={(e) => setForfeit(e.target.checked)}
-          className="h-4 w-4 rounded border-zinc-700 bg-zinc-950"
+          className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950"
         />
         <label htmlFor="isForfeit">
           Partido por default (no se registran goles individuales)
@@ -58,7 +58,7 @@ export default function ScoreCaptureForm({
 
       <div className="flex items-center justify-center gap-4">
         <div className="text-center">
-          <label className="block text-sm text-zinc-400" htmlFor="homeScore">
+          <label className="block text-sm text-zinc-600 dark:text-zinc-400" htmlFor="homeScore">
             {homeTeam.name}
           </label>
           <input
@@ -69,12 +69,12 @@ export default function ScoreCaptureForm({
             max={99}
             defaultValue={initialHomeScore ?? 0}
             required
-            className="mt-1 w-20 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-center text-xl text-zinc-100 outline-none focus:border-emerald-500"
+            className="mt-1 w-20 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-center text-xl text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
           />
         </div>
         <span className="mt-6 text-zinc-500">—</span>
         <div className="text-center">
-          <label className="block text-sm text-zinc-400" htmlFor="awayScore">
+          <label className="block text-sm text-zinc-600 dark:text-zinc-400" htmlFor="awayScore">
             {awayTeam.name}
           </label>
           <input
@@ -85,14 +85,14 @@ export default function ScoreCaptureForm({
             max={99}
             defaultValue={initialAwayScore ?? 0}
             required
-            className="mt-1 w-20 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-center text-xl text-zinc-100 outline-none focus:border-emerald-500"
+            className="mt-1 w-20 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-center text-xl text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
           />
         </div>
       </div>
 
       {isPlayoff && !forfeit && (
         <div>
-          <p className="mb-2 text-center text-sm text-zinc-400">
+          <p className="mb-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
             Penales (solo si el cruce terminó empatado en el global)
           </p>
           <div className="flex items-center justify-center gap-4">
@@ -103,7 +103,7 @@ export default function ScoreCaptureForm({
               max={99}
               defaultValue={initialHomePenalties ?? ""}
               placeholder="—"
-              className="w-16 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-center text-zinc-100 outline-none focus:border-emerald-500"
+              className="w-16 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-center text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
             />
             <span className="text-zinc-500">—</span>
             <input
@@ -113,7 +113,7 @@ export default function ScoreCaptureForm({
               max={99}
               defaultValue={initialAwayPenalties ?? ""}
               placeholder="—"
-              className="w-16 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-center text-zinc-100 outline-none focus:border-emerald-500"
+              className="w-16 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-center text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
             />
           </div>
         </div>
@@ -127,7 +127,7 @@ export default function ScoreCaptureForm({
       )}
 
       <div>
-        <label className="block text-sm text-zinc-400" htmlFor="streamUrl">
+        <label className="block text-sm text-zinc-600 dark:text-zinc-400" htmlFor="streamUrl">
           Link de transmisión (opcional)
         </label>
         <input
@@ -136,7 +136,7 @@ export default function ScoreCaptureForm({
           type="url"
           placeholder="https://..."
           defaultValue={initialStreamUrl ?? ""}
-          className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
       </div>
 
@@ -147,7 +147,7 @@ export default function ScoreCaptureForm({
       >
         {pending ? "Guardando…" : "Guardar resultado"}
       </button>
-      {state.error && <p className="text-center text-sm text-red-400">{state.error}</p>}
+      {state.error && <p className="text-center text-sm text-red-600 dark:text-red-400">{state.error}</p>}
     </form>
   );
 }
@@ -163,14 +163,14 @@ function PlayerGoalsList({
 }) {
   return (
     <div>
-      <p className="mb-2 text-sm font-semibold text-zinc-300">{team.name}</p>
+      <p className="mb-2 text-sm font-semibold text-zinc-700 dark:text-zinc-300">{team.name}</p>
       {players.length === 0 && (
         <p className="text-sm text-zinc-500">Sin jugadores registrados.</p>
       )}
       <div className="space-y-1">
         {players.map((p) => (
           <div key={p.id} className="flex items-center justify-between gap-2">
-            <label htmlFor={`goal_${p.id}__${team.id}`} className="text-sm text-zinc-200">
+            <label htmlFor={`goal_${p.id}__${team.id}`} className="text-sm text-zinc-800 dark:text-zinc-200">
               #{p.jersey_number} {p.name}
             </label>
             <input
@@ -180,7 +180,7 @@ function PlayerGoalsList({
               min={0}
               max={99}
               defaultValue={existingGoals[p.id] ?? 0}
-              className="w-16 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-center text-zinc-100 outline-none focus:border-emerald-500"
+              className="w-16 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-center text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
             />
           </div>
         ))}

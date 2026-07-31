@@ -44,14 +44,14 @@ export default async function PlantillaPage({
     <main className="mx-auto max-w-2xl space-y-8">
       <div>
         <h2 className="text-2xl font-bold">Plantilla — {team.name}</h2>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           {players.length}/{team.player_limit} jugadores registrados
           {team.status !== "active" && " · equipo retirado"}
           {tournament && !tournament.registration_open && " · registro cerrado"}
         </p>
       </div>
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4">
         <AddPlayerForm
           teamId={team.id}
           disabled={disabled}
@@ -67,10 +67,10 @@ export default async function PlantillaPage({
         {players.map((p) => (
           <div
             key={p.id}
-            className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3"
+            className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-4 py-3"
           >
-            <p className="text-zinc-100">
-              <span className="mr-2 inline-block w-8 text-center font-mono text-zinc-400">
+            <p className="text-zinc-900 dark:text-zinc-100">
+              <span className="mr-2 inline-block w-8 text-center font-mono text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
                 #{p.jersey_number}
               </span>
               {p.name}
@@ -78,7 +78,7 @@ export default async function PlantillaPage({
             <form action={deactivatePlayerAction.bind(null, team.id, p.id)}>
               <button
                 type="submit"
-                className="rounded-lg border border-red-900 px-3 py-1 text-sm text-red-300 hover:bg-red-950"
+                className="rounded-lg border border-red-300 dark:border-red-900 px-3 py-1 text-sm text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950"
               >
                 Dar de baja
               </button>

@@ -36,9 +36,9 @@ export default async function CalendarioAdminPage({
     return (
       <main className="mx-auto max-w-4xl py-8">
         <h1 className="text-2xl font-bold">Calendario</h1>
-        <p className="mt-2 text-zinc-400">
+        <p className="mt-2 text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           Primero crea un torneo en{" "}
-          <a href="/admin/torneos" className="text-emerald-400 underline">
+          <a href="/admin/torneos" className="text-emerald-700 dark:text-emerald-400 underline">
             Torneos
           </a>
           .
@@ -66,7 +66,7 @@ export default async function CalendarioAdminPage({
       <div>
         <h1 className="text-2xl font-bold">Calendario</h1>
         <div className="mt-2 flex items-center gap-2">
-          <label className="text-sm text-zinc-400">Torneo:</label>
+          <label className="text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">Torneo:</label>
           <TournamentSelect
             tournaments={tournaments}
             selectedId={selected.id}
@@ -76,7 +76,7 @@ export default async function CalendarioAdminPage({
       </div>
 
       {rounds.length === 0 && (
-        <div className="rounded-xl border border-emerald-900 bg-emerald-950/30 p-4">
+        <div className="rounded-xl border border-emerald-200 dark:border-emerald-900 bg-emerald-950/30 p-4">
           <GenerateScheduleForm
             tournamentId={selected.id}
             activeTeamsCount={activeTeams.length}
@@ -85,7 +85,7 @@ export default async function CalendarioAdminPage({
       )}
 
       {rounds.length > 0 && newTeams.length > 0 && (
-        <div className="rounded-xl border border-emerald-900 bg-emerald-950/30 p-4">
+        <div className="rounded-xl border border-emerald-200 dark:border-emerald-900 bg-emerald-950/30 p-4">
           <ExtendScheduleForm
             tournamentId={selected.id}
             newTeamNames={newTeams.map((team) => team.name)}
@@ -93,7 +93,7 @@ export default async function CalendarioAdminPage({
         </div>
       )}
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4">
         <CreateMatchForm tournamentId={selected.id} teams={activeTeams} />
       </div>
 
@@ -103,7 +103,7 @@ export default async function CalendarioAdminPage({
         )}
         {rounds.map((round) => (
           <div key={round}>
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-400">
+            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
               Jornada {round}
             </h2>
             <div className="space-y-2">
@@ -112,20 +112,20 @@ export default async function CalendarioAdminPage({
                 .map((m) => (
                   <div
                     key={m.id}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4"
                   >
                     <div>
-                      <p className="text-zinc-100">
+                      <p className="text-zinc-900 dark:text-zinc-100">
                         {m.home_name}
                         {m.status === "played" && (
-                          <span className="mx-2 font-mono text-emerald-400">
+                          <span className="mx-2 font-mono text-emerald-700 dark:text-emerald-400">
                             {m.home_score}-{m.away_score}
                           </span>
                         )}
                         {m.status !== "played" && <span className="mx-2 text-zinc-500">vs</span>}
                         {m.away_name}
                       </p>
-                      <p className="text-sm text-zinc-400">
+                      <p className="text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
                         {STATUS_LABEL[m.status]}
                         {m.is_forfeit && " · default"} · {formatKickoff(m.kickoff_at)}
                         {m.venue && ` · ${m.venue}`}
@@ -135,7 +135,7 @@ export default async function CalendarioAdminPage({
                           href={m.stream_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-emerald-400 hover:underline"
+                          className="text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
                         >
                           🔴 Link de transmisión
                         </a>
@@ -169,7 +169,7 @@ export default async function CalendarioAdminPage({
                           >
                             <button
                               type="submit"
-                              className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800"
+                              className="rounded-lg border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                             >
                               {m.status === "postponed" ? "Reprogramar" : "Posponer"}
                             </button>
@@ -177,7 +177,7 @@ export default async function CalendarioAdminPage({
                           <form action={deleteMatchAction.bind(null, m.id)}>
                             <button
                               type="submit"
-                              className="rounded-lg border border-red-900 px-3 py-1.5 text-sm text-red-300 hover:bg-red-950"
+                              className="rounded-lg border border-red-300 dark:border-red-900 px-3 py-1.5 text-sm text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950"
                             >
                               Eliminar
                             </button>

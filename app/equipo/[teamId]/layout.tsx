@@ -15,10 +15,10 @@ export default async function TeamScopedLayout({
   return (
     <div>
       <div className="px-4 pt-3">
-        <Link href="/equipo" className="text-sm text-emerald-400 underline">
+        <Link href="/equipo" className="text-sm text-emerald-700 dark:text-emerald-400 underline">
           ← Mis equipos
         </Link>
-        <h1 className="mt-1 text-lg font-semibold text-zinc-100">{team.name}</h1>
+        <h1 className="mt-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">{team.name}</h1>
       </div>
       <EquipoTabs teamId={teamId} />
       <div className="p-4">{children}</div>

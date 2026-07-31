@@ -11,7 +11,7 @@ export default function CreateTournamentForm() {
   return (
     <form action={formAction} className="flex items-end gap-2">
       <div className="flex-1">
-        <label className="block text-sm font-medium text-zinc-300" htmlFor="name">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="name">
           Nuevo torneo
         </label>
         <input
@@ -20,7 +20,7 @@ export default function CreateTournamentForm() {
           type="text"
           placeholder="Apertura 2026"
           required
-          className="mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
       </div>
       <button
@@ -30,7 +30,7 @@ export default function CreateTournamentForm() {
       >
         {pending ? "Creando…" : "Crear"}
       </button>
-      {state.error && <p className="text-sm text-red-400">{state.error}</p>}
+      {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
     </form>
   );
 }

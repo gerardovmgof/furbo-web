@@ -17,12 +17,12 @@ export default async function TorneosPage() {
     <main className="mx-auto max-w-3xl space-y-8 py-8">
       <div>
         <h1 className="text-2xl font-bold">Torneos</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           Da de alta un torneo antes de registrar equipos.
         </p>
       </div>
 
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4">
         <CreateTournamentForm />
       </div>
 
@@ -33,19 +33,19 @@ export default async function TorneosPage() {
         {tournaments.map((t) => (
           <div
             key={t.id}
-            className="rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+            className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4"
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <p className="font-semibold text-zinc-100">{t.name}</p>
-                <p className="text-sm text-zinc-400">
+                <p className="font-semibold text-zinc-900 dark:text-zinc-100">{t.name}</p>
+                <p className="text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
                   {STATUS_LABEL[t.status]} ·{" "}
                   {t.registration_open ? "Registro abierto" : "Registro cerrado"}
                 </p>
               </div>
               <a
                 href={`/admin/equipos?t=${t.id}`}
-                className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800"
+                className="rounded-lg border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
               >
                 Ver equipos →
               </a>
@@ -58,7 +58,7 @@ export default async function TorneosPage() {
               >
                 <button
                   type="submit"
-                  className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800"
+                  className="rounded-lg border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                 >
                   {t.registration_open ? "Cerrar registro" : "Abrir registro"}
                 </button>
@@ -68,7 +68,7 @@ export default async function TorneosPage() {
                 <form action={setTournamentStatusAction.bind(null, t.id, "regular")}>
                   <button
                     type="submit"
-                    className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800"
+                    className="rounded-lg border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                   >
                     Iniciar fase regular
                   </button>
@@ -78,7 +78,7 @@ export default async function TorneosPage() {
                 <form action={setTournamentStatusAction.bind(null, t.id, "draft")}>
                   <button
                     type="submit"
-                    className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800"
+                    className="rounded-lg border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                   >
                     Regresar a borrador
                   </button>
@@ -88,7 +88,7 @@ export default async function TorneosPage() {
                 <form action={setTournamentStatusAction.bind(null, t.id, "finished")}>
                   <button
                     type="submit"
-                    className="rounded-lg border border-red-900 px-3 py-1.5 text-sm text-red-300 hover:bg-red-950"
+                    className="rounded-lg border border-red-300 dark:border-red-900 px-3 py-1.5 text-sm text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950"
                   >
                     Finalizar
                   </button>

@@ -17,7 +17,7 @@ export default async function TablaPage() {
     return (
       <main className="mx-auto max-w-3xl py-8">
         <h1 className="text-2xl font-bold">Posiciones</h1>
-        <p className="mt-2 text-zinc-400">Aún no hay torneos activos.</p>
+        <p className="mt-2 text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">Aún no hay torneos activos.</p>
       </main>
     );
   }
@@ -33,16 +33,16 @@ export default async function TablaPage() {
     <main className="mx-auto max-w-3xl space-y-4 py-8">
       <div>
         <h1 className="text-2xl font-bold">Posiciones</h1>
-        <p className="mt-1 text-sm text-zinc-400">{tournament.name}</p>
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">{tournament.name}</p>
       </div>
 
       {standings.length === 0 ? (
         <p className="text-sm text-zinc-500">Aún no hay equipos en este torneo.</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+        <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
           <table className="w-full min-w-[560px] text-sm">
             <thead>
-              <tr className="border-b border-zinc-800 bg-zinc-900 text-left text-zinc-400">
+              <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-left text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
                 <th className="px-3 py-2 font-medium">#</th>
                 <th className="px-3 py-2 font-medium">Equipo</th>
                 <th className="px-2 py-2 text-center font-medium">JJ</th>
@@ -61,25 +61,25 @@ export default async function TablaPage() {
                 return (
                 <tr
                   key={row.teamId}
-                  className={`border-b border-zinc-900 last:border-0 ${zone.kind ? ZONE_BORDER[zone.kind] : ""}`}
+                  className={`border-b border-zinc-100 dark:border-zinc-900 last:border-0 ${zone.kind ? ZONE_BORDER[zone.kind] : ""}`}
                 >
-                  <td className="px-3 py-2 text-zinc-400">{row.pos}</td>
-                  <td className="px-3 py-2 text-zinc-100">
-                    <a href={`/equipos/${row.teamId}`} className="hover:text-emerald-400">
+                  <td className="px-3 py-2 text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">{row.pos}</td>
+                  <td className="px-3 py-2 text-zinc-900 dark:text-zinc-100">
+                    <a href={`/equipos/${row.teamId}`} className="hover:text-emerald-700 dark:hover:text-emerald-400">
                       {row.name}
                     </a>
                     {row.withdrawn && (
-                      <span className="ml-2 text-xs text-red-400">(retirado)</span>
+                      <span className="ml-2 text-xs text-red-600 dark:text-red-400">(retirado)</span>
                     )}
                   </td>
-                  <td className="px-2 py-2 text-center text-zinc-300">{row.jj}</td>
-                  <td className="px-2 py-2 text-center text-zinc-300">{row.jg}</td>
-                  <td className="px-2 py-2 text-center text-zinc-300">{row.je}</td>
-                  <td className="px-2 py-2 text-center text-zinc-300">{row.jp}</td>
-                  <td className="px-2 py-2 text-center text-zinc-300">{row.gf}</td>
-                  <td className="px-2 py-2 text-center text-zinc-300">{row.gc}</td>
-                  <td className="px-2 py-2 text-center text-zinc-300">{row.dif}</td>
-                  <td className="px-3 py-2 text-center font-semibold text-zinc-100">
+                  <td className="px-2 py-2 text-center text-zinc-700 dark:text-zinc-300">{row.jj}</td>
+                  <td className="px-2 py-2 text-center text-zinc-700 dark:text-zinc-300">{row.jg}</td>
+                  <td className="px-2 py-2 text-center text-zinc-700 dark:text-zinc-300">{row.je}</td>
+                  <td className="px-2 py-2 text-center text-zinc-700 dark:text-zinc-300">{row.jp}</td>
+                  <td className="px-2 py-2 text-center text-zinc-700 dark:text-zinc-300">{row.gf}</td>
+                  <td className="px-2 py-2 text-center text-zinc-700 dark:text-zinc-300">{row.gc}</td>
+                  <td className="px-2 py-2 text-center text-zinc-700 dark:text-zinc-300">{row.dif}</td>
+                  <td className="px-3 py-2 text-center font-semibold text-zinc-900 dark:text-zinc-100">
                     {row.pts}
                   </td>
                 </tr>
@@ -91,7 +91,7 @@ export default async function TablaPage() {
       )}
 
       {playoffTeams && standings.length > 0 && (
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-400">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           <span className="flex items-center gap-1.5">
             <span className="inline-block h-2.5 w-2.5 rounded-sm bg-emerald-500" />
             Clasifica a liguilla

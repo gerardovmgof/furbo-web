@@ -27,7 +27,7 @@ export default async function CalendarioPage() {
     return (
       <main className="mx-auto max-w-3xl py-8">
         <h1 className="text-2xl font-bold">Calendario</h1>
-        <p className="mt-2 text-zinc-400">Aún no hay torneos activos.</p>
+        <p className="mt-2 text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">Aún no hay torneos activos.</p>
       </main>
     );
   }
@@ -39,7 +39,7 @@ export default async function CalendarioPage() {
     <main className="mx-auto max-w-3xl space-y-8 py-8">
       <div>
         <h1 className="text-2xl font-bold">Calendario</h1>
-        <p className="mt-1 text-sm text-zinc-400">{tournament.name}</p>
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">{tournament.name}</p>
       </div>
 
       <div className="space-y-6">
@@ -48,7 +48,7 @@ export default async function CalendarioPage() {
         )}
         {rounds.map((round) => (
           <div key={round}>
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-400">
+            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
               Jornada {round}
             </h2>
             <div className="space-y-2">
@@ -57,12 +57,12 @@ export default async function CalendarioPage() {
                 .map((m) => (
                   <div
                     key={m.id}
-                    className="rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+                    className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4"
                   >
-                    <p className="text-zinc-100">
+                    <p className="text-zinc-900 dark:text-zinc-100">
                       {m.home_name}
                       {m.status === "played" ? (
-                        <span className="mx-2 font-mono text-emerald-400">
+                        <span className="mx-2 font-mono text-emerald-700 dark:text-emerald-400">
                           {m.home_score}-{m.away_score}
                         </span>
                       ) : (
@@ -70,7 +70,7 @@ export default async function CalendarioPage() {
                       )}
                       {m.away_name}
                     </p>
-                    <p className="text-sm text-zinc-400">
+                    <p className="text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
                       {STATUS_LABEL[m.status]}
                       {m.is_forfeit && " · default"} · {formatKickoff(m.kickoff_at)}
                       {m.venue && ` · ${m.venue}`}
@@ -80,7 +80,7 @@ export default async function CalendarioPage() {
                         href={m.stream_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-1 inline-block text-sm text-emerald-400 hover:underline"
+                        className="mt-1 inline-block text-sm text-emerald-700 dark:text-emerald-400 hover:underline"
                       >
                         🔴 Ver transmisión
                       </a>

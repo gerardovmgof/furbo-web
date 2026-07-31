@@ -36,5 +36,5 @@ Profesional, serio, deportivo. Se siente como una plataforma real de gestión de
 
 ## Accessibility & Inclusion
 
-- Contraste AA como mínimo (ya cuidado hoy: fondo zinc-950 + texto zinc-100).
-- **Pendiente de implementar:** soporte de modo claro/oscuro con switch manual. Los árbitros usan la app en cancha bajo luz solar directa, donde el modo oscuro actual estorba (poco legible); en otras condiciones el modo oscuro sí ayuda. Hoy la app es 100% oscura sin alternativa real (el `prefers-color-scheme` de `globals.css` es vestigial — las clases de Tailwind fuerzan oscuro siempre).
+- Contraste AA como mínimo (fondo zinc-950/blanco + texto zinc-100/zinc-900 según modo).
+- **Implementado (F12):** modo claro/oscuro con switch manual (botón en el Footer, visible en toda la app). Persiste en `localStorage`, no depende de `prefers-color-scheme` — un árbitro en la cancha bajo sol directo necesita elegir según la luz del momento, no según el SO del teléfono.

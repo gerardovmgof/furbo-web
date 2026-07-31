@@ -38,38 +38,38 @@ export default async function PagosPage({
     <main className="mx-auto max-w-2xl space-y-8">
       <div>
         <h2 className="text-2xl font-bold">Pagos</h2>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           {team.name} · límite actual: {team.player_limit} jugadores
         </p>
       </div>
 
       {SKIP_MERCADOPAGO_FOR_TESTING && (
-        <p className="rounded-lg border border-amber-900 bg-amber-950 px-3 py-2 text-sm text-amber-300">
+        <p className="rounded-lg border border-amber-300 dark:border-amber-900 bg-amber-50 dark:bg-amber-950 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
           🧪 Modo de prueba: los pagos se marcan como aprobados de inmediato, sin pasar por
           Mercado Pago.
         </p>
       )}
 
       {resultado === "ok" && (
-        <p className="rounded-lg border border-emerald-900 bg-emerald-950 px-3 py-2 text-sm text-emerald-300">
+        <p className="rounded-lg border border-emerald-200 dark:border-emerald-900 bg-emerald-50 dark:bg-emerald-950 px-3 py-2 text-sm text-emerald-800 dark:text-emerald-300">
           {SKIP_MERCADOPAGO_FOR_TESTING
             ? "Pago aprobado (modo de prueba). Tu límite de jugadores ya se actualizó."
             : "Pago en proceso. Si Mercado Pago ya lo confirmó, tu límite de jugadores se actualiza en unos segundos."}
         </p>
       )}
       {resultado === "error" && (
-        <p className="rounded-lg border border-red-900 bg-red-950 px-3 py-2 text-sm text-red-300">
+        <p className="rounded-lg border border-red-300 dark:border-red-900 bg-red-50 dark:bg-red-950 px-3 py-2 text-sm text-red-700 dark:text-red-300">
           No se pudo completar el pago. Intenta de nuevo.
         </p>
       )}
       {resultado === "pendiente" && (
-        <p className="rounded-lg border border-amber-900 bg-amber-950 px-3 py-2 text-sm text-amber-300">
+        <p className="rounded-lg border border-amber-300 dark:border-amber-900 bg-amber-50 dark:bg-amber-950 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
           Tu pago está pendiente de confirmación por Mercado Pago.
         </p>
       )}
 
       {tournament?.slot_price_cents ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4">
           <BuySlotsForm teamId={team.id} pricePerSlotCents={tournament.slot_price_cents} />
         </div>
       ) : (
@@ -77,7 +77,7 @@ export default async function PagosPage({
       )}
 
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           Cargos pendientes
         </h3>
         {pending.length === 0 && (
@@ -86,11 +86,11 @@ export default async function PagosPage({
         {pending.map((c) => (
           <div
             key={c.id}
-            className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+            className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4"
           >
             <div>
-              <p className="text-zinc-100">{c.concept}</p>
-              <p className="text-sm text-zinc-400">{formatMoney(c.amount_cents)}</p>
+              <p className="text-zinc-900 dark:text-zinc-100">{c.concept}</p>
+              <p className="text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">{formatMoney(c.amount_cents)}</p>
             </div>
             <form action={`/equipo/${team.id}/pagos/pay-charge`} method="POST">
               <input type="hidden" name="chargeId" value={c.id} />
@@ -106,12 +106,12 @@ export default async function PagosPage({
       </div>
 
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">Historial</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">Historial</h3>
         {history.length === 0 && <p className="text-sm text-zinc-500">Sin pagos registrados.</p>}
         {history.map((c) => (
-          <div key={c.id} className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-            <p className="text-zinc-100">{c.concept}</p>
-            <p className="text-sm text-zinc-400">
+          <div key={c.id} className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4">
+            <p className="text-zinc-900 dark:text-zinc-100">{c.concept}</p>
+            <p className="text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
               {formatMoney(c.amount_cents)} · {STATUS_LABEL[c.status]}
               {c.paid_via && ` · ${c.paid_via === "manual" ? "pago manual" : "Mercado Pago"}`}
             </p>

@@ -16,9 +16,9 @@ export default function PublicTabs() {
   const pathname = usePathname();
 
   return (
-    <header className="border-b border-zinc-800">
+    <header className="border-b border-zinc-200 dark:border-zinc-800">
       <div className="mx-auto flex max-w-3xl items-center gap-2 px-4 py-3">
-        <Link href="/" className="mr-1 shrink-0 font-semibold text-zinc-100">
+        <Link href="/" className="mr-1 shrink-0 font-semibold text-zinc-900 dark:text-zinc-100">
           ⚽ Furbo Web
         </Link>
         <nav className="flex flex-1 gap-1 overflow-x-auto">
@@ -31,7 +31,7 @@ export default function PublicTabs() {
                 className={`shrink-0 rounded-lg px-3 py-1.5 text-sm transition ${
                   active
                     ? "bg-emerald-600 text-white"
-                    : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-800 dark:hover:text-zinc-200"
                 }`}
               >
                 {tab.label}
@@ -41,7 +41,7 @@ export default function PublicTabs() {
         </nav>
         <Link
           href="/login"
-          className="shrink-0 rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 transition hover:bg-zinc-800"
+          className="shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-sm text-zinc-800 dark:text-zinc-200 transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
         >
           Acceso
         </Link>

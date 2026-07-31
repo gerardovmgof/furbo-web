@@ -24,7 +24,7 @@ export default async function LiguillaPage() {
     return (
       <main className="mx-auto max-w-3xl py-8">
         <h1 className="text-2xl font-bold">Liguilla</h1>
-        <p className="mt-2 text-zinc-400">La liguilla aún no se ha generado.</p>
+        <p className="mt-2 text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">La liguilla aún no se ha generado.</p>
       </main>
     );
   }
@@ -40,13 +40,13 @@ export default async function LiguillaPage() {
     <main className="mx-auto max-w-3xl space-y-8 py-8">
       <div>
         <h1 className="text-2xl font-bold">Liguilla</h1>
-        <p className="mt-1 text-sm text-zinc-400">{tournament.name}</p>
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">{tournament.name}</p>
       </div>
 
       <div className="space-y-6">
         {rounds.map((round) => (
           <div key={round}>
-            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-400">
+            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
               {roundLabel(round, playoffTeams)}
             </h2>
             <div className="space-y-2">
@@ -59,13 +59,13 @@ export default async function LiguillaPage() {
                     .filter((m) => m.bracket_slot === slot)
                     .sort((a, b) => a.leg - b.leg);
                   return (
-                    <div key={slot} className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+                    <div key={slot} className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4">
                       {legs.map((m) => (
                         <div key={m.id} className="py-1">
-                          <p className="text-zinc-100">
+                          <p className="text-zinc-900 dark:text-zinc-100">
                             {m.home_name}
                             {m.status === "played" ? (
-                              <span className="mx-2 font-mono text-emerald-400">
+                              <span className="mx-2 font-mono text-emerald-700 dark:text-emerald-400">
                                 {m.home_score}-{m.away_score}
                                 {m.home_penalties !== null &&
                                   ` (pen. ${m.home_penalties}-${m.away_penalties})`}

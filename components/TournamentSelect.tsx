@@ -18,7 +18,7 @@ export default function TournamentSelect({
     <select
       value={selectedId}
       onChange={(e) => router.push(`${basePath}?t=${e.target.value}`)}
-      className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100"
+      className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-sm text-zinc-900 dark:text-zinc-100"
     >
       {tournaments.map((tour) => (
         <option key={tour.id} value={tour.id}>

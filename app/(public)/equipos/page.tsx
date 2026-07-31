@@ -10,7 +10,7 @@ export default async function EquiposIndexPage() {
     return (
       <main className="mx-auto max-w-2xl py-8">
         <h1 className="text-2xl font-bold">Equipos</h1>
-        <p className="mt-2 text-zinc-400">Aún no hay torneos activos.</p>
+        <p className="mt-2 text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">Aún no hay torneos activos.</p>
       </main>
     );
   }
@@ -22,7 +22,7 @@ export default async function EquiposIndexPage() {
     <main className="mx-auto max-w-2xl space-y-4 py-8">
       <div>
         <h1 className="text-2xl font-bold">Equipos</h1>
-        <p className="mt-1 text-sm text-zinc-400">{tournament.name}</p>
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">{tournament.name}</p>
       </div>
 
       {teams.length === 0 ? (
@@ -33,15 +33,15 @@ export default async function EquiposIndexPage() {
             <a
               key={t.id}
               href={`/equipos/${t.id}`}
-              className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition hover:border-emerald-700"
+              className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4 transition hover:border-emerald-600 dark:hover:border-emerald-700"
             >
-              <p className="font-semibold text-zinc-100">
+              <p className="font-semibold text-zinc-900 dark:text-zinc-100">
                 {t.name}
                 {t.status === "withdrawn" && (
-                  <span className="ml-2 text-xs font-normal text-red-400">(retirado)</span>
+                  <span className="ml-2 text-xs font-normal text-red-600 dark:text-red-400">(retirado)</span>
                 )}
               </p>
-              <p className="mt-1 text-sm text-zinc-400">
+              <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
                 {counts[t.id] ?? 0} jugadores registrados
               </p>
             </a>

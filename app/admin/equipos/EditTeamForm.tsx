@@ -23,7 +23,7 @@ export default function EditTeamForm({
 
   return (
     <details className="group inline-block align-top">
-      <summary className="inline-block cursor-pointer list-none rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800 [&::-webkit-details-marker]:hidden">
+      <summary className="inline-block cursor-pointer list-none rounded-lg border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 [&::-webkit-details-marker]:hidden">
         <span className="group-open:hidden">Editar</span>
         <span className="hidden group-open:inline">Cerrar</span>
       </summary>
@@ -34,7 +34,7 @@ export default function EditTeamForm({
           type="text"
           defaultValue={currentName}
           required
-          className="w-40 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+          className="w-40 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
         <input
           name="playerLimit"
@@ -43,12 +43,12 @@ export default function EditTeamForm({
           max={99}
           defaultValue={currentPlayerLimit}
           required
-          className="w-20 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+          className="w-20 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
         <select
           name="ownerUserId"
           defaultValue={currentOwnerUserId ?? ""}
-          className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+          className="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         >
           <option value="">Sin dueño</option>
           {owners.map((owner) => (
@@ -64,7 +64,7 @@ export default function EditTeamForm({
         >
           {pending ? "Guardando…" : "Guardar"}
         </button>
-        {state.error && <p className="w-full text-sm text-red-400">{state.error}</p>}
+        {state.error && <p className="w-full text-sm text-red-600 dark:text-red-400">{state.error}</p>}
       </form>
     </details>
   );

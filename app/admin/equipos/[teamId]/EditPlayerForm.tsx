@@ -20,7 +20,7 @@ export default function EditPlayerForm({
 
   return (
     <details className="group inline-block align-top">
-      <summary className="inline-block cursor-pointer list-none rounded-lg border border-zinc-700 px-3 py-1 text-sm text-zinc-200 hover:bg-zinc-800 [&::-webkit-details-marker]:hidden">
+      <summary className="inline-block cursor-pointer list-none rounded-lg border border-zinc-300 dark:border-zinc-700 px-3 py-1 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 [&::-webkit-details-marker]:hidden">
         <span className="group-open:hidden">Editar</span>
         <span className="hidden group-open:inline">Cerrar</span>
       </summary>
@@ -34,14 +34,14 @@ export default function EditPlayerForm({
           max={999}
           defaultValue={currentJerseyNumber}
           required
-          className="w-16 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+          className="w-16 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
         <input
           name="name"
           type="text"
           defaultValue={currentName}
           required
-          className="w-40 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-sm text-zinc-100 outline-none focus:border-emerald-500"
+          className="w-40 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-2 py-1 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
         <button
           type="submit"
@@ -50,7 +50,7 @@ export default function EditPlayerForm({
         >
           {pending ? "Guardando…" : "Guardar"}
         </button>
-        {state.error && <p className="w-full text-sm text-red-400">{state.error}</p>}
+        {state.error && <p className="w-full text-sm text-red-600 dark:text-red-400">{state.error}</p>}
       </form>
     </details>
   );

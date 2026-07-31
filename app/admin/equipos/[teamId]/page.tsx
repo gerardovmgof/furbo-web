@@ -16,7 +16,7 @@ export default async function AdminTeamPlayersPage({
   if (!team) {
     return (
       <main className="mx-auto max-w-2xl py-8">
-        <p className="text-zinc-400">No se encontró el equipo.</p>
+        <p className="text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">No se encontró el equipo.</p>
       </main>
     );
   }
@@ -26,11 +26,11 @@ export default async function AdminTeamPlayersPage({
   return (
     <main className="mx-auto max-w-2xl space-y-8 py-8">
       <div>
-        <Link href="/admin/equipos" className="text-sm text-emerald-400 underline">
+        <Link href="/admin/equipos" className="text-sm text-emerald-700 dark:text-emerald-400 underline">
           ← Equipos
         </Link>
         <h1 className="mt-2 text-2xl font-bold">Jugadores — {team.name}</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           {players.length}/{team.player_limit} jugadores registrados
         </p>
       </div>
@@ -42,7 +42,7 @@ export default async function AdminTeamPlayersPage({
         {players.map((p) => (
           <div
             key={p.id}
-            className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3"
+            className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-4 py-3"
           >
             <EditPlayerForm
               teamId={team.id}
@@ -53,7 +53,7 @@ export default async function AdminTeamPlayersPage({
             <form action={deactivatePlayerAction.bind(null, team.id, p.id)}>
               <button
                 type="submit"
-                className="rounded-lg border border-red-900 px-3 py-1 text-sm text-red-300 hover:bg-red-950"
+                className="rounded-lg border border-red-300 dark:border-red-900 px-3 py-1 text-sm text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950"
               >
                 Dar de baja
               </button>

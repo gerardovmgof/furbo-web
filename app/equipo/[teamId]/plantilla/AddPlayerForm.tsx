@@ -46,7 +46,7 @@ export default function AddPlayerForm({
         {showPagosLink && (
           <>
             {" "}
-            <Link href={`/equipo/${teamId}/pagos`} className="text-emerald-400 underline">
+            <Link href={`/equipo/${teamId}/pagos`} className="text-emerald-700 dark:text-emerald-400 underline">
               Compra cupos en Pagos.
             </Link>
           </>
@@ -58,7 +58,7 @@ export default function AddPlayerForm({
   return (
     <form ref={formRef} action={formAction} className="flex flex-wrap items-end gap-2">
       <div>
-        <label className="block text-sm font-medium text-zinc-300" htmlFor="name">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="name">
           Nombre del jugador
         </label>
         <input
@@ -66,11 +66,11 @@ export default function AddPlayerForm({
           name="name"
           type="text"
           required
-          className="mt-1 w-56 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-56 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-300" htmlFor="jerseyNumber">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="jerseyNumber">
           Dorsal
         </label>
         <input
@@ -80,7 +80,7 @@ export default function AddPlayerForm({
           min={0}
           max={999}
           required
-          className="mt-1 w-24 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-24 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
       </div>
       <button
@@ -90,7 +90,7 @@ export default function AddPlayerForm({
       >
         {pending ? "Agregando…" : "Agregar jugador"}
       </button>
-      {state.error && <p className="w-full text-sm text-red-400">{state.error}</p>}
+      {state.error && <p className="w-full text-sm text-red-600 dark:text-red-400">{state.error}</p>}
     </form>
   );
 }

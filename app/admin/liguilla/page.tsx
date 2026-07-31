@@ -35,9 +35,9 @@ export default async function LiguillaAdminPage({
     return (
       <main className="mx-auto max-w-3xl py-8">
         <h1 className="text-2xl font-bold">Liguilla</h1>
-        <p className="mt-2 text-zinc-400">
+        <p className="mt-2 text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           Primero crea un torneo en{" "}
-          <a href="/admin/torneos" className="text-emerald-400 underline">
+          <a href="/admin/torneos" className="text-emerald-700 dark:text-emerald-400 underline">
             Torneos
           </a>
           .
@@ -53,7 +53,7 @@ export default async function LiguillaAdminPage({
       <div>
         <h1 className="text-2xl font-bold">Liguilla</h1>
         <div className="mt-2 flex items-center gap-2">
-          <label className="text-sm text-zinc-400">Torneo:</label>
+          <label className="text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">Torneo:</label>
           <TournamentSelect
             tournaments={tournaments}
             selectedId={selected.id}
@@ -65,10 +65,10 @@ export default async function LiguillaAdminPage({
       {selected.status === "playoffs" || selected.status === "finished" ? (
         <BracketView tournamentId={selected.id} playoffTeams={selected.playoff_teams ?? 8} />
       ) : (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-          <p className="mb-4 text-sm text-zinc-400">
+        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4">
+          <p className="mb-4 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
             Cierra la fase regular en{" "}
-            <a href="/admin/torneos" className="text-emerald-400 underline">
+            <a href="/admin/torneos" className="text-emerald-700 dark:text-emerald-400 underline">
               Torneos
             </a>{" "}
             y genera la liguilla a partir de la tabla de posiciones actual.
@@ -97,7 +97,7 @@ async function BracketView({
     <div className="space-y-6">
       {rounds.map((round) => (
         <div key={round}>
-          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-400">
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
             {roundLabel(round, playoffTeams)}
           </h2>
           <div className="space-y-2">
@@ -108,17 +108,17 @@ async function BracketView({
                   .filter((m) => m.bracket_slot === slot)
                   .sort((a, b) => a.leg - b.leg);
                 return (
-                  <div key={slot} className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+                  <div key={slot} className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4">
                     {legs.map((m) => (
                       <div
                         key={m.id}
                         className="flex flex-wrap items-center justify-between gap-2 py-1"
                       >
                         <div>
-                          <p className="text-zinc-100">
+                          <p className="text-zinc-900 dark:text-zinc-100">
                             {m.home_name}
                             {m.status === "played" && (
-                              <span className="mx-2 font-mono text-emerald-400">
+                              <span className="mx-2 font-mono text-emerald-700 dark:text-emerald-400">
                                 {m.home_score}-{m.away_score}
                                 {m.home_penalties !== null &&
                                   ` (pen. ${m.home_penalties}-${m.away_penalties})`}
@@ -142,7 +142,7 @@ async function BracketView({
                             {m.status === "played" ? "Editar" : "Capturar"}
                           </a>
                         ) : (
-                          <span className="text-xs text-zinc-600">Cruce sin definir</span>
+                          <span className="text-xs text-zinc-600 dark:text-zinc-400 dark:text-zinc-600">Cruce sin definir</span>
                         )}
                       </div>
                     ))}

@@ -25,14 +25,14 @@ export default function CreateChargeForm({
     <form action={formAction} className="flex flex-wrap items-end gap-2">
       <input type="hidden" name="tournamentId" value={tournamentId} />
       <div>
-        <label className="block text-sm font-medium text-zinc-300" htmlFor="teamId">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="teamId">
           Equipo
         </label>
         <select
           id="teamId"
           name="teamId"
           required
-          className="mt-1 w-40 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-40 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         >
           {teams.map((t) => (
             <option key={t.id} value={t.id}>
@@ -42,7 +42,7 @@ export default function CreateChargeForm({
         </select>
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-300" htmlFor="concept">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="concept">
           Concepto
         </label>
         <input
@@ -51,11 +51,11 @@ export default function CreateChargeForm({
           type="text"
           required
           placeholder="Renta de cancha jornada 5"
-          className="mt-1 w-56 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-56 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-zinc-300" htmlFor="amount">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="amount">
           Monto (MXN)
         </label>
         <input
@@ -66,7 +66,7 @@ export default function CreateChargeForm({
           step={0.01}
           required
           onWheel={(e) => e.currentTarget.blur()}
-          className="mt-1 w-32 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-32 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
       </div>
       <button
@@ -76,7 +76,7 @@ export default function CreateChargeForm({
       >
         {pending ? "Creando…" : "Crear cargo"}
       </button>
-      {state.error && <p className="w-full text-sm text-red-400">{state.error}</p>}
+      {state.error && <p className="w-full text-sm text-red-600 dark:text-red-400">{state.error}</p>}
     </form>
   );
 }

@@ -18,7 +18,7 @@ export default function SetSlotPriceForm({
     <form action={formAction} className="flex flex-wrap items-end gap-2">
       <input type="hidden" name="tournamentId" value={tournamentId} />
       <div>
-        <label className="block text-sm font-medium text-zinc-300" htmlFor="slotPrice">
+        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="slotPrice">
           Precio por cupo (MXN)
         </label>
         <input
@@ -30,7 +30,7 @@ export default function SetSlotPriceForm({
           defaultValue={currentPriceCents ? (currentPriceCents / 100).toFixed(2) : ""}
           placeholder="0 = deshabilitado"
           onWheel={(e) => e.currentTarget.blur()}
-          className="mt-1 w-40 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+          className="mt-1 w-40 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
         />
       </div>
       <button
@@ -40,8 +40,8 @@ export default function SetSlotPriceForm({
       >
         {pending ? "Guardando…" : "Guardar precio"}
       </button>
-      {state.error && <p className="w-full text-sm text-red-400">{state.error}</p>}
-      {state.ok && <p className="w-full text-sm text-emerald-400">✅ Precio guardado.</p>}
+      {state.error && <p className="w-full text-sm text-red-600 dark:text-red-400">{state.error}</p>}
+      {state.ok && <p className="w-full text-sm text-emerald-700 dark:text-emerald-400">✅ Precio guardado.</p>}
     </form>
   );
 }

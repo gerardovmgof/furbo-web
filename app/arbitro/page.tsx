@@ -20,7 +20,7 @@ export default async function ArbitroPage() {
     return (
       <main className="mx-auto max-w-3xl py-8">
         <h1 className="text-2xl font-bold">Partidos pendientes</h1>
-        <p className="mt-2 text-zinc-400">No hay torneos activos.</p>
+        <p className="mt-2 text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">No hay torneos activos.</p>
       </main>
     );
   }
@@ -42,7 +42,7 @@ export default async function ArbitroPage() {
     <main className="mx-auto max-w-3xl space-y-6 py-8">
       <div>
         <h1 className="text-2xl font-bold">Partidos pendientes</h1>
-        <p className="mt-1 text-sm text-zinc-400">{tournament.name}</p>
+        <p className="mt-1 text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">{tournament.name}</p>
       </div>
 
       {pending.length === 0 ? (
@@ -52,13 +52,13 @@ export default async function ArbitroPage() {
           {pending.map((m) => (
             <div
               key={m.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-800 bg-zinc-900 p-4"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 p-4"
             >
               <div>
-                <p className="text-zinc-100">
+                <p className="text-zinc-900 dark:text-zinc-100">
                   {m.home_name} <span className="text-zinc-500">vs</span> {m.away_name}
                 </p>
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
                   {m.phase === "playoff" ? `Liguilla · ronda ${m.round}` : `Jornada ${m.round}`}
                   {m.leg === 2 && " · vuelta"} · {formatKickoff(m.kickoff_at)}
                   {m.venue && ` · ${m.venue}`}

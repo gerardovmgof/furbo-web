@@ -6,7 +6,7 @@ import { createTeamUserAction, createRefereeAction, type FormState } from "./act
 const initialState: FormState = { error: null };
 
 const TOGGLE_LABEL_CLASS =
-  "cursor-pointer rounded-lg px-3 py-1.5 border border-zinc-700 text-zinc-300 hover:bg-zinc-800";
+  "cursor-pointer rounded-lg px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800";
 
 export default function CreateUserForm() {
   const [teamState, teamFormAction, teamPending] = useActionState(
@@ -51,7 +51,7 @@ export default function CreateUserForm() {
       <div className="hidden w-full peer-checked/team:block">
         <form action={teamFormAction} className="flex flex-wrap items-end gap-2">
           <div>
-            <label className="block text-sm font-medium text-zinc-300" htmlFor="username">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="username">
               Usuario
             </label>
             <input
@@ -59,11 +59,11 @@ export default function CreateUserForm() {
               name="username"
               type="text"
               required
-              className="mt-1 w-40 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+              className="mt-1 w-40 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-zinc-300" htmlFor="password">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="password">
               Contraseña
             </label>
             <input
@@ -73,7 +73,7 @@ export default function CreateUserForm() {
               required
               minLength={10}
               placeholder="mín. 10 caracteres"
-              className="mt-1 w-48 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+              className="mt-1 w-48 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
             />
           </div>
           <button
@@ -83,9 +83,9 @@ export default function CreateUserForm() {
           >
             {teamPending ? "Creando…" : "Crear dueño de equipo"}
           </button>
-          {teamState.error && <p className="w-full text-sm text-red-400">{teamState.error}</p>}
+          {teamState.error && <p className="w-full text-sm text-red-600 dark:text-red-400">{teamState.error}</p>}
           {teamState.ok && (
-            <p className="w-full text-sm text-emerald-400">
+            <p className="w-full text-sm text-emerald-700 dark:text-emerald-400">
               ✅ Dueño de equipo creado. Va a poder registrar su(s) equipo(s) al iniciar sesión.
             </p>
           )}
@@ -95,7 +95,7 @@ export default function CreateUserForm() {
       <div className="hidden w-full peer-checked/referee:block">
         <form action={refereeFormAction} className="flex flex-wrap items-end gap-2">
           <div>
-            <label className="block text-sm font-medium text-zinc-300" htmlFor="ref-username">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="ref-username">
               Usuario
             </label>
             <input
@@ -103,11 +103,11 @@ export default function CreateUserForm() {
               name="username"
               type="text"
               required
-              className="mt-1 w-40 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+              className="mt-1 w-40 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-zinc-300" htmlFor="ref-password">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300" htmlFor="ref-password">
               Contraseña
             </label>
             <input
@@ -117,7 +117,7 @@ export default function CreateUserForm() {
               required
               minLength={10}
               placeholder="mín. 10 caracteres"
-              className="mt-1 w-48 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100 outline-none focus:border-emerald-500"
+              className="mt-1 w-48 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-emerald-500"
             />
           </div>
           <button
@@ -128,9 +128,9 @@ export default function CreateUserForm() {
             {refereePending ? "Creando…" : "Crear árbitro"}
           </button>
           {refereeState.error && (
-            <p className="w-full text-sm text-red-400">{refereeState.error}</p>
+            <p className="w-full text-sm text-red-600 dark:text-red-400">{refereeState.error}</p>
           )}
-          {refereeState.ok && <p className="w-full text-sm text-emerald-400">✅ Árbitro creado.</p>}
+          {refereeState.ok && <p className="w-full text-sm text-emerald-700 dark:text-emerald-400">✅ Árbitro creado.</p>}
         </form>
       </div>
     </div>

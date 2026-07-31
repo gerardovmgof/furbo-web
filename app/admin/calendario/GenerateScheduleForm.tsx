@@ -26,18 +26,18 @@ export default function GenerateScheduleForm({
     <form action={formAction} className="space-y-3">
       <input type="hidden" name="tournamentId" value={tournamentId} />
       <div>
-        <p className="font-semibold text-zinc-100">Sortear calendario</p>
-        <p className="text-sm text-zinc-400">
+        <p className="font-semibold text-zinc-900 dark:text-zinc-100">Sortear calendario</p>
+        <p className="text-sm text-zinc-400 dark:text-zinc-600 dark:text-zinc-400">
           Genera automáticamente todas las jornadas de la fase regular (todos contra todos), con
           los cruces revueltos al azar. Los horarios y canchas se ajustan después, partido por
           partido.
         </p>
       </div>
-      <label className="flex items-center gap-2 text-sm text-zinc-300">
+      <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
         <input
           type="checkbox"
           name="doubleRound"
-          className="h-4 w-4 rounded border-zinc-700 bg-zinc-950"
+          className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950"
         />
         Ida y vuelta
       </label>
@@ -48,7 +48,7 @@ export default function GenerateScheduleForm({
       >
         {pending ? "Sorteando…" : "Sortear calendario"}
       </button>
-      {state.error && <p className="text-sm text-red-400">{state.error}</p>}
+      {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
     </form>
   );
 }
